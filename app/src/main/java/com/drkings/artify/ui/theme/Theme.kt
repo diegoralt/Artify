@@ -12,9 +12,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
+    primary = Green60,
+    onPrimary = Green80,
+    primaryContainer = Green20,
     secondary = PurpleGrey80,
-    tertiary = Pink80
+    tertiary = Pink80,
+    surface = Neutral8,
+    background = Neutral6,
+    onSurface = NeutralVariant90,
+    onSurfaceVariant = NeutralVariant60,
+    outline = NeutralVariant40,
+    outlineVariant = NeutralVariant20,
+    error = Red80,
 )
 
 private val LightColorScheme = lightColorScheme(
@@ -47,7 +56,7 @@ fun ArtifyTheme(
         }
 
         darkTheme -> DarkColorScheme
-        else -> LightColorScheme
+        else -> DarkColorScheme // LightColorScheme for next version
     }
 
     MaterialTheme(
