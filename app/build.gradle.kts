@@ -37,6 +37,19 @@ android {
     buildFeatures {
         compose = true
     }
+
+    lint {
+        warningsAsErrors = false
+        abortOnError = true
+        xmlReport = true
+        htmlReport = true
+        xmlOutput = file("build/reports/lint/lint-results.xml")
+        htmlOutput = file("build/reports/lint/lint-results.html")
+        disable += setOf(
+            "ObsoleteLintCustomCheck",
+            "GradleDependency"
+        )
+    }
 }
 
 dependencies {
