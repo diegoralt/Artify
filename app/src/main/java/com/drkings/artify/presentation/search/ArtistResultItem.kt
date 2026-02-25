@@ -32,8 +32,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.drkings.artify.domain.entity.ArtistEntity
-import com.drkings.artify.domain.entity.ArtistType
-import com.drkings.artify.ui.theme.Blue80
 import com.drkings.artify.ui.theme.Green60
 import com.drkings.artify.ui.theme.NeutralVariant20
 import com.drkings.artify.ui.theme.NeutralVariant40
@@ -70,7 +68,7 @@ fun ArtistResultItem(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
-            ArtistTypeChip(type = artist.type)
+            ArtistTypeChip()
         }
 
         Icon(
@@ -86,19 +84,11 @@ fun ArtistResultItem(
 
 @Composable
 private fun ArtistAvatar(artist: ArtistEntity) {
-    val avatarGradient = when (artist.type) {
-        ArtistType.BAND -> Brush.linearGradient(
-            colors = listOf(Color(0xFF1a3a2a), Color(0xFF2a5a3a)),
-            start = Offset(0f, 0f), end = Offset(52f, 52f)
-        )
-
-        ArtistType.ARTIST -> Brush.linearGradient(
-            colors = listOf(Color(0xFF1a2a3a), Color(0xFF2a3a5a)),
-            start = Offset(0f, 0f), end = Offset(52f, 52f)
-        )
-    }
-    val fallbackIcon =
-        if (artist.type == ArtistType.BAND) Icons.Default.Person else Icons.Default.Person
+    val avatarGradient = Brush.linearGradient(
+        colors = listOf(Color(0xFF1a3a2a), Color(0xFF2a5a3a)),
+        start = Offset(0f, 0f), end = Offset(52f, 52f)
+    )
+    val fallbackIcon = Icons.Default.Person
 
     Box(
         modifier = Modifier
@@ -126,11 +116,8 @@ private fun ArtistAvatar(artist: ArtistEntity) {
 }
 
 @Composable
-private fun ArtistTypeChip(type: ArtistType) {
-    val (bg, textColor, label) = when (type) {
-        ArtistType.BAND -> Triple(Green60.copy(alpha = 0.12f), Green60, "BAND")
-        ArtistType.ARTIST -> Triple(Blue80.copy(alpha = 0.12f), Blue80, "ARTIST")
-    }
+private fun ArtistTypeChip() {
+    val (bg, textColor, label) = Triple(Green60.copy(alpha = 0.12f), Green60, "BAND")
     Box(
         modifier = Modifier
             .height(20.dp)
@@ -164,25 +151,13 @@ private fun Modifier.drawBottomBorder(color: Color): Modifier = this.then(
 
 @Preview(showBackground = true, backgroundColor = 0xFF060E0B)
 @Composable
-private fun ArtistResultItemBandPreview() {
-    ArtistResultItem(
-        artist = ArtistEntity(
-            name = "The Beatles",
-            type = ArtistType.BAND,
-            thumbUrl = null
-        ),
-        onClick = {}
-    )
-}
-
-@Preview(showBackground = true, backgroundColor = 0xFF060E0B)
-@Composable
 private fun ArtistResultItemSoloPreview() {
     ArtistResultItem(
         artist = ArtistEntity(
+            id = 1,
             name = "John Lennon",
-            type = ArtistType.ARTIST,
-            thumbUrl = null
+            type = "artist",
+            thumbUrl = "null"
         ),
         onClick = {}
     )

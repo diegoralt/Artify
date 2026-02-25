@@ -67,7 +67,7 @@ import com.drkings.artify.ui.theme.NeutralVariant90
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(
-    navigateToDetails: (String) -> Unit,
+    navigateToDetails: (Int) -> Unit,
     searchViewModel: SearchViewModel = hiltViewModel()
 ) {
     val uiState by searchViewModel.uiState.collectAsStateWithLifecycle()
@@ -273,7 +273,7 @@ private fun ErrorContent(message: String, onRetry: () -> Unit) {
 private fun SearchResultsList(
     results: List<ArtistEntity>,
     isLoadingNextPage: Boolean,
-    onArtistClick: (String) -> Unit,
+    onArtistClick: (Int) -> Unit,
     onLoadMore: () -> Unit
 ) {
     val listState = rememberLazyListState()
