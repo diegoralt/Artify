@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Artify</string>
+    <string name="search_screen_hint">Search for an artist...</string>
+    <string name="search_screen_empty_title">Discover your favorite artists</string>
+    <string name="search_screen_empty_subtitle">Search by name to explore discographies, band members and more</string>
+    <string name="search_screen_error_retry">Error while getting information</string>
+    <string name="search_screen_clear_content_desc"></string>
+    <string name="search_screen_search_content_desc"></string>
+    <string name="search_screen_more_content_desc"></string>
 </resources>
