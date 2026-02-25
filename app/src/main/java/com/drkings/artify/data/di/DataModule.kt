@@ -3,7 +3,9 @@ package com.drkings.artify.data.di
 import com.drkings.artify.BuildConfig
 import com.drkings.artify.data.datasource.api.ApiService
 import com.drkings.artify.data.datasource.api.AuthInterceptor
+import com.drkings.artify.data.repository.ArtistDetailRepositoryImpl
 import com.drkings.artify.data.repository.SearchRepositoryImpl
+import com.drkings.artify.domain.repository.ArtistDetailRepository
 import com.drkings.artify.domain.repository.SearchRepository
 import dagger.Module
 import dagger.Provides
@@ -51,5 +53,10 @@ object DataModule {
     @Provides
     fun provideSearchRepository(apiService: ApiService): SearchRepository {
         return SearchRepositoryImpl(apiService)
+    }
+
+    @Provides
+    fun provideArtistDetailRepository(apiService: ApiService): ArtistDetailRepository {
+        return ArtistDetailRepositoryImpl(apiService)
     }
 }
