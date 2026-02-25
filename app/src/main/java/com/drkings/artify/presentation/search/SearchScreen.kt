@@ -157,7 +157,7 @@ private fun SearchField(
             ) {
                 Icon(
                     imageVector = Icons.Default.Search,
-                    contentDescription = "Search icon",
+                    contentDescription = stringResource(R.string.search_screen_search_content_desc),
                     tint = iconColor,
                     modifier = Modifier.size(20.dp)
                 )
@@ -178,7 +178,7 @@ private fun SearchField(
                     ) {
                         Icon(
                             imageVector = Icons.Default.Close,
-                            contentDescription = "Icon close",
+                            contentDescription = stringResource(R.string.search_screen_clear_content_desc),
                             tint = NeutralVariant40,
                             modifier = Modifier.size(16.dp)
                         )
