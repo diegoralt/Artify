@@ -49,7 +49,8 @@ fun ArtistDetailResponse.toDomain(): ArtistDetailEntity {
 
 fun MemberResponse.toDomain(): MemberEntity {
     return MemberEntity(
+        id = id,
         name = name,
-        active = active
+        imageUrl = thumbnailUrl.orEmpty()
     )
 }

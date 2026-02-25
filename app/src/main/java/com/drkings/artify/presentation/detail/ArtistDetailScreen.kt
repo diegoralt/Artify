@@ -1,9 +1,82 @@
 package com.drkings.artify.presentation.detail
 
+import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.SegmentedButtonDefaults.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.ColorPainter
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
+import coil3.request.crossfade
+import coil3.size.Scale
+import coil3.size.Size
+import com.drkings.artify.R
+import com.drkings.artify.domain.entity.ArtistDetailEntity
+import com.drkings.artify.domain.entity.MemberEntity
+import com.drkings.artify.ui.theme.Green40
+import com.drkings.artify.ui.theme.Green60
+import com.drkings.artify.ui.theme.Neutral15
+import com.drkings.artify.ui.theme.Neutral6
+import com.drkings.artify.ui.theme.NeutralVariant20
+import com.drkings.artify.ui.theme.NeutralVariant40
+import com.drkings.artify.ui.theme.NeutralVariant60
+import com.drkings.artify.ui.theme.NeutralVariant90
+import kotlin.collections.emptyList
 
 private const val BIO_COLLAPSED_LINES = 4
 
@@ -36,14 +109,18 @@ private fun ArtistDetailContent(
 ) {
     val scrollState = rememberScrollState()
 
-    // Imagen primaria del artista — fallback a la primera disponible si no hay primary
-    val heroImageUrl = remember(artist.images) {
-        artist.images.firstOrNull { it.type == "primary" }?.resourceUrl
-            ?: artist.images.firstOrNull()?.resourceUrl
-    }
+    val heroImageUrl by remember { mutableStateOf(artist.image) }
 
-    Box(modifier = Modifier.fillMaxSize().background(Neutral6)) {
-        Column(modifier = Modifier.fillMaxSize().verticalScroll(scrollState)) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Neutral6)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState)
+        ) {
 
             // ── Hero Image ────────────────────────────────────────────────────
             HeroImageSection(
@@ -120,7 +197,7 @@ private fun HeroImageSection(
         if (imageUrl != null) {
             AsyncImage(
                 model = imageRequest,
-                contentDescription = stringResource(R.string.artist_detail_hero_cd, artistName),
+                contentDescription = stringResource(R.string.artist_detail_screen_hero_content_desc, artistName),
                 contentScale = ContentScale.Crop,
                 error = ColorPainter(Color.Transparent),
                 modifier = Modifier.fillMaxSize()
@@ -152,7 +229,7 @@ private fun HeroImageSection(
         ) {
             Icon(
                 imageVector = Icons.Default.ArrowBack,
-                contentDescription = stringResource(R.string.back_cd),
+                contentDescription = stringResource(R.string.common_back_button_content_desc),
                 tint = NeutralVariant90
             )
         }
@@ -193,7 +270,7 @@ private fun BiographySection(profile: String) {
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        SectionLabel(text = stringResource(R.string.artist_detail_biography))
+        SectionLabel(text = stringResource(R.string.artist_detail_screen_biography))
 
         Box(
             modifier = Modifier
@@ -228,8 +305,8 @@ private fun BiographySection(profile: String) {
                 ) {
                     Text(
                         text = stringResource(
-                            if (expanded) R.string.artist_detail_bio_less
-                            else R.string.artist_detail_bio_more
+                            if (expanded) R.string.artist_detail_screen_bio_less
+                            else R.string.artist_detail_screen_bio_more
                         ),
                         fontSize = 12.sp,
                         fontWeight = FontWeight.SemiBold,
@@ -257,7 +334,7 @@ private fun MembersSection(members: List<MemberEntity>) {
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        SectionLabel(text = stringResource(R.string.artist_detail_members))
+        SectionLabel(text = stringResource(R.string.artist_detail_screen_members))
 
         LazyRow(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -276,7 +353,7 @@ private fun MemberItem(member: MemberEntity) {
 
     val imageRequest = remember(member.id) {
         ImageRequest.Builder(context)
-            .data(member.thumbnailUrl)
+            .data(member.imageUrl)
             // Tamaño fijo para evitar bitmaps sobredimensionados en el LazyRow
             .size(Size(56, 56))
             .scale(Scale.FILL)
@@ -299,12 +376,12 @@ private fun MemberItem(member: MemberEntity) {
                 .background(Neutral15)
                 .then(
                     // Borde verde para miembros activos
-                    if (member.active) Modifier.border(1.5.dp, Green40, CircleShape)
-                    else Modifier.border(1.dp, NeutralVariant20, CircleShape)
+                    // if (member.active) Modifier.border(1.5.dp, Green40, CircleShape)
+                    Modifier.border(1.dp, NeutralVariant20, CircleShape)
                 ),
             contentAlignment = Alignment.Center
         ) {
-            if (member.thumbnailUrl != null) {
+            if (member.imageUrl.isNotBlank()) {
                 AsyncImage(
                     model = imageRequest,
                     contentDescription = member.name,
@@ -325,7 +402,7 @@ private fun MemberItem(member: MemberEntity) {
         Text(
             text = member.name,
             fontSize = 11.sp,
-            color = if (member.active) NeutralVariant90 else NeutralVariant40,
+            color = NeutralVariant90, //else NeutralVariant40,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis,
             textAlign = androidx.compose.ui.text.style.TextAlign.Center,
@@ -351,7 +428,7 @@ private fun DiscographyButton(onClick: () -> Unit) {
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(
-                text = stringResource(R.string.artist_detail_discography_btn),
+                text = stringResource(R.string.artist_detail_screen_discography_button),
                 fontSize = 15.sp,
                 fontWeight = FontWeight.SemiBold,
                 color = Neutral6
@@ -371,7 +448,9 @@ private fun DiscographyButton(onClick: () -> Unit) {
 @Composable
 private fun ArtistDetailLoadingContent(onBackClick: () -> Unit) {
     Box(
-        modifier = Modifier.fillMaxSize().background(Neutral6),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Neutral6),
         contentAlignment = Alignment.Center
     ) {
         CircularProgressIndicator(color = Green60)
@@ -383,7 +462,9 @@ private fun ArtistDetailLoadingContent(onBackClick: () -> Unit) {
 @Composable
 private fun ArtistDetailErrorContent(message: String, onBackClick: () -> Unit) {
     Box(
-        modifier = Modifier.fillMaxSize().background(Neutral6),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Neutral6),
         contentAlignment = Alignment.Center
     ) {
         Column(
@@ -398,7 +479,7 @@ private fun ArtistDetailErrorContent(message: String, onBackClick: () -> Unit) {
                 colors = ButtonDefaults.outlinedButtonColors(contentColor = Green60),
                 border = androidx.compose.foundation.BorderStroke(1.dp, Green40)
             ) {
-                Text(stringResource(R.string.back_cd))
+                Text(stringResource(R.string.common_back_button_content_desc))
             }
         }
     }
@@ -417,14 +498,6 @@ private fun SectionLabel(text: String) {
     )
 }
 
-// ── Sealed UI State ───────────────────────────────────────────────────────────
-
-sealed interface ArtistDetailUiState {
-    object Loading : ArtistDetailUiState
-    data class Error(val message: String) : ArtistDetailUiState
-    data class Success(val artist: ArtistDetailEntity) : ArtistDetailUiState
-}
-
 // ── Preview ───────────────────────────────────────────────────────────────────
 
 @Preview(showBackground = true, backgroundColor = 0xFF060E0B)
@@ -434,14 +507,14 @@ private fun ArtistDetailContentPreview() {
         artist = ArtistDetailEntity(
             id = 29735,
             name = "Coldplay",
-            profile = "Pop rock band from London, England.\nFormed 1997.\n\nJonny Buckland - Guitar\nWill Champion - Drums\nGuy Berryman - Bass\nChris Martin - Vocals",
-            images = emptyList(),
+            profile = "Pop rock band from London, England.\r\nFormed 1997.\r\n\r\n[b][u]Line-up:[/u][/b]\r\nJonny Buckland - Guitar/Keys\\Backing vocals (1997-)\r\nWill Champion - Drums/Backing vocals (1998-)\r\nGuy Berryman - Bass/Keys (1997-)\r\nChris Martin - Vocals/Piano\\Acoustic guitar(1997-)\r\nPhil Harvey - Manager/Creative director (1998-2002, 2006-)",
+            image = "https://i.discogs.com/sBor9_gG6g8eU12WLhcoDn_N88zv3F5VXh8i_lkVaW0/rs:fit/g:sm/q:90/h:385/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9BLTI5NzM1/LTE3MjAwNjU1MTEt/NzM3Mi5qcGVn.jpeg",
             members = listOf(
-                MemberEntity(42610, "Chris Martin", active = true, thumbnailUrl = null),
-                MemberEntity(530745, "Guy Berryman", active = true, thumbnailUrl = null),
-                MemberEntity(530746, "Will Champion", active = true, thumbnailUrl = null),
-                MemberEntity(530747, "Jon Buckland", active = true, thumbnailUrl = null),
-                MemberEntity(530749, "Phil Harvey", active = false, thumbnailUrl = null)
+                MemberEntity(42610, "Chris Martin", imageUrl = ""),
+                MemberEntity(530745, "Guy Berryman", imageUrl = ""),
+                MemberEntity(530746, "Will Champion", imageUrl = ""),
+                MemberEntity(530747, "Jon Buckland", imageUrl = ""),
+                MemberEntity(530749, "Phil Harvey", imageUrl = "")
             )
         ),
         onBackClick = {},
