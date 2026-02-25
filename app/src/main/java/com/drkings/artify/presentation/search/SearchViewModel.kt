@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.drkings.artify.domain.entity.ArtistEntity
 import com.drkings.artify.domain.usecase.SearchUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -15,21 +16,23 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SearchViewModel @Inject constructor(searchUseCase: SearchUseCase) : ViewModel() {
-    private val _uiState = MutableStateFlow<SearchUiState>(SearchUiState.Empty)
+class SearchViewModel @Inject constructor(private val searchUseCase: SearchUseCase) : ViewModel() {
+    private val _uiState = MutableStateFlow<SearchUiState>(SearchUiState.Empty(true))
     val uiState = _uiState.asStateFlow()
 
     private val _query = MutableStateFlow("")
     val query = _query.asStateFlow()
 
     private var currentPage = FIRST_PAGE
+    private var totalPages  = Int.MAX_VALUE
     private var currentQuery = ""
-    private var hasReachedEnd = false
+    private val hasReachedEnd get() = currentPage >= totalPages
 
     init {
         observeQueryWithDebounce()
     }
 
+    @OptIn(FlowPreview::class)
     private fun observeQueryWithDebounce() {
         viewModelScope.launch {
             _query
@@ -37,6 +40,10 @@ class SearchViewModel @Inject constructor(searchUseCase: SearchUseCase) : ViewMo
                 .filter { it.isNotBlank() }       // ignora queries vacíos
                 .distinctUntilChanged()            // ignora el mismo valor repetido
                 .collectLatest { query ->
+                    val current = _uiState.value
+                    if (current is SearchUiState.Success && current.isLoadingNextPage) {
+                        _uiState.value = current.copy(isLoadingNextPage = false)
+                    }
                     resetPaginationState()
                     performSearch(query = query, page = FIRST_PAGE)
                 }
@@ -48,7 +55,7 @@ class SearchViewModel @Inject constructor(searchUseCase: SearchUseCase) : ViewMo
         currentQuery = newQuery
 
         if (newQuery.isBlank()) {
-            _uiState.value = SearchUiState.Empty
+            _uiState.value = SearchUiState.Empty(isBeforeQuery = true)
         }
     }
 
@@ -70,13 +77,13 @@ class SearchViewModel @Inject constructor(searchUseCase: SearchUseCase) : ViewMo
                 page = currentPage,
                 perPage = PAGE_SIZE
             )
-                .onSuccess { newResults ->
+                .onSuccess { result ->
                     // Si Discogs devuelve menos items que PAGE_SIZE, no hay más páginas
-                    if (newResults.size < PAGE_SIZE) hasReachedEnd = true
+                    totalPages = result.pagination.pages
 
                     _uiState.value = current.copy(
                         // Acumulación: los nuevos resultados se agregan a los existentes
-                        results = current.results + newResults,
+                        artists = current.artists + result.artists,
                         isLoadingNextPage = false
                     )
                 }
@@ -104,12 +111,14 @@ class SearchViewModel @Inject constructor(searchUseCase: SearchUseCase) : ViewMo
                 page = page,
                 perPage = PAGE_SIZE
             )
-                .onSuccess { results ->
-                    _uiState.value = if (results.isEmpty()) {
+                .onSuccess { result ->
+                    totalPages = result.pagination.pages
+
+                    _uiState.value = if (result.artists.isEmpty()) {
                         // Discogs respondió OK pero sin resultados para este query
-                        SearchUiState.Empty
+                        SearchUiState.Empty(isBeforeQuery = false)
                     } else {
-                        SearchUiState.Success(results = results)
+                        SearchUiState.Success(artists = result.artists, isLoadingNextPage = false)
                     }
                 }
                 .onFailure { error ->
@@ -123,7 +132,7 @@ class SearchViewModel @Inject constructor(searchUseCase: SearchUseCase) : ViewMo
 
     private fun resetPaginationState() {
         currentPage = FIRST_PAGE
-        hasReachedEnd = false
+        totalPages  = Int.MAX_VALUE
     }
 
     private companion object {
@@ -134,13 +143,11 @@ class SearchViewModel @Inject constructor(searchUseCase: SearchUseCase) : ViewMo
 }
 
 sealed interface SearchUiState {
-    object Empty : SearchUiState
+    data class Empty(val isBeforeQuery: Boolean) : SearchUiState
     object Loading : SearchUiState
     data class Error(val message: String) : SearchUiState
     data class Success(
-        val artist: List<ArtistEntity>,
-        val isLoadingNextPage: Boolean,
-        val onArtistClick: (String) -> Unit,
-        val onLoadMore: () -> Unit
+        val artists: List<ArtistEntity>,
+        val isLoadingNextPage: Boolean
     ) : SearchUiState
 }

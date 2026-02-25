@@ -68,7 +68,7 @@ fun ArtistResultItem(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
-            ArtistTypeChip()
+            ArtistTypeChip(artist.type)
         }
 
         Icon(
@@ -116,8 +116,11 @@ private fun ArtistAvatar(artist: ArtistEntity) {
 }
 
 @Composable
-private fun ArtistTypeChip() {
-    val (bg, textColor, label) = Triple(Green60.copy(alpha = 0.12f), Green60, "BAND")
+private fun ArtistTypeChip(type: String) {
+    val (bg, textColor, label) = Triple(
+        Green60.copy(alpha = 0.12f),
+        Green60,
+        type.replaceFirstChar { it.uppercase() })
     Box(
         modifier = Modifier
             .height(20.dp)

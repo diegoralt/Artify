@@ -8,8 +8,12 @@ import javax.inject.Inject
 
 class SearchRepositoryImpl @Inject constructor(val apiService: ApiService) : SearchRepository {
     override suspend fun search(query: String, page: Int, perPage: Int): SearchEntity {
-        val searchResponse = apiService.search(query, page, perPage)
+        val searchResponse = apiService.search(query, TYPE_SEARCH, page, perPage)
 
         return searchResponse.toDomain()
+    }
+
+    private companion object{
+        const val TYPE_SEARCH = "artist"
     }
 }

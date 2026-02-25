@@ -103,7 +103,7 @@ fun SearchScreen(
                 label = "SearchStateTransition"
             ) { state ->
                 when (state) {
-                    is SearchUiState.Empty -> EmptyStateContent()
+                    is SearchUiState.Empty -> EmptyStateContent(state.isBeforeQuery)
                     is SearchUiState.Loading -> LoadingContent()
                     is SearchUiState.Error -> ErrorContent(
                         message = state.message,
@@ -111,7 +111,7 @@ fun SearchScreen(
                     )
 
                     is SearchUiState.Success -> SearchResultsList(
-                        results = state.artist,
+                        results = state.artists,
                         isLoadingNextPage = state.isLoadingNextPage,
                         onArtistClick = navigateToDetails,
                         onLoadMore = searchViewModel::loadNextPage
@@ -188,7 +188,7 @@ private fun SearchField(
 }
 
 @Composable
-private fun EmptyStateContent() {
+private fun EmptyStateContent(isBeforeQuery: Boolean) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -213,15 +213,17 @@ private fun EmptyStateContent() {
             )
         }
         Spacer(Modifier.height(16.dp))
-        Text(
-            text = stringResource(R.string.search_screen_empty_title),
-            fontSize = 17.sp,
-            fontWeight = FontWeight.SemiBold,
-            color = NeutralVariant90
-        )
+        if (isBeforeQuery) {
+            Text(
+                text = stringResource(R.string.search_screen_empty_title),
+                fontSize = 17.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = NeutralVariant90
+            )
+        }
         Spacer(Modifier.height(8.dp))
         Text(
-            text = stringResource(R.string.search_screen_empty_subtitle),
+            text = stringResource(if (isBeforeQuery) R.string.search_screen_empty_subtitle else R.string.search_screen_empty_suggestions),
             fontSize = 14.sp,
             color = NeutralVariant60,
             lineHeight = 22.sp,

@@ -6,9 +6,10 @@ import retrofit2.http.Query
 
 interface ApiService {
 
-    @GET("database/search?type=artist")
+    @GET("database/search")
     suspend fun search(
         @Query("q") query: String,
+        @Query("type") type: String,
         @Query("page") page: Int,
         @Query("per_page") perPage: Int
     ): SearchResponse
