@@ -1,15 +1,37 @@
-*.iml
-.gradle
-/local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
-.DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
+# ── Local configuration ───────────────────────────────────────
 local.properties
+
+# ── Built output ──────────────────────────────────────────────
+build/
+**/build/
+*.apk
+*.aab
+*.ap_
+
+# ── Android Studio ────────────────────────────────────────────
+*.iml
+.idea/
+*.iws
+*.ipr
+.navigation/
+captures/
+.externalNativeBuild/
+.cxx/
+
+# ── Gradle ────────────────────────────────────────────────────
+.gradle/
+gradle-app.setting
+!gradle-wrapper.jar
+!gradle-wrapper.properties
+
+# ── Signing ───────────────────────────────────────────────────
+*.jks
+*.keystore
+
+# ── OS ────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ── Profiling & logs ──────────────────────────────────────────
+*.hprof
+*.log
