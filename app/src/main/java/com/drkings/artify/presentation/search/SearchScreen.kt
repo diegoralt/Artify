@@ -34,6 +34,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -46,6 +48,7 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
@@ -73,21 +76,25 @@ fun SearchScreen(
     val uiState by searchViewModel.uiState.collectAsStateWithLifecycle()
     val query by searchViewModel.query.collectAsStateWithLifecycle()
 
-    Scaffold { padding ->
+    Scaffold(topBar = {
+        TopAppBar(
+            title = {
+                Text(
+                    text = stringResource(R.string.app_name),
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 22.sp,
+                    color = NeutralVariant90
+                )
+            },
+            colors = TopAppBarDefaults.topAppBarColors(containerColor = Neutral6)
+        )
+    }) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
                 .background(Neutral6)
         ) {
-            Text(
-                text = stringResource(R.string.app_name),
-                fontSize = 22.sp,
-                color = NeutralVariant90,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(top = 16.dp, start = 20.dp, bottom = 16.dp)
-            )
-
             SearchField(
                 query = query,
                 onQueryChange = searchViewModel::onQueryChange,
