@@ -3,8 +3,10 @@ package com.drkings.artify.presentation.detail
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import com.drkings.artify.domain.entity.ArtistDetailEntity
 import com.drkings.artify.domain.usecase.ArtistDetailUseCase
+import com.drkings.artify.presentation.core.ArtistDetail
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,9 +21,7 @@ class ArtistDetailViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<ArtistDetailUiState>(ArtistDetailUiState.Loading)
     val uiState = _uiState.asStateFlow()
 
-    private val artistId: Int = checkNotNull(savedStateHandle[NAV_ARG_ARTIST_ID]) {
-        "artistId is required in navigation route: artist_detail/{$NAV_ARG_ARTIST_ID}"
-    }
+    private val artistId: Int = savedStateHandle.toRoute<ArtistDetail>().idArtist
 
     init {
         loadArtistDetail()
@@ -41,10 +41,6 @@ class ArtistDetailViewModel @Inject constructor(
                     )
                 }
         }
-    }
-
-    companion object {
-        const val NAV_ARG_ARTIST_ID = "artistId"
     }
 }
 

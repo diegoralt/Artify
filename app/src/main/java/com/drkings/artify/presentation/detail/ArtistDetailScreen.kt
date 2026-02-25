@@ -45,6 +45,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
@@ -63,6 +64,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
+import coil3.size.Dimension
 import coil3.size.Scale
 import coil3.size.Size
 import com.drkings.artify.R
@@ -184,20 +186,27 @@ private fun HeroImageSection(
         // Fondo degradado siempre presente como placeholder
         Box(
             modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    Brush.linearGradient(
-                        colors = listOf(Color(0xFF0D2019), Color(0xFF1A3A28)),
-                        start = Offset(0f, 0f),
-                        end = Offset(Float.MAX_VALUE, Float.MAX_VALUE)
+                .drawBehind {
+                    drawRect(
+                        brush = Brush.linearGradient(
+                            colors = listOf(Color(0xFF0D2019), Color(0xFF1A3A28)),
+                            start = Offset(0f, 0f),
+                            end = Offset(
+                                size.width,
+                                size.height
+                            )  // ← coordenadas finitas garantizadas
+                        )
                     )
-                )
+                }
         )
 
         if (imageUrl != null) {
             AsyncImage(
                 model = imageRequest,
-                contentDescription = stringResource(R.string.artist_detail_screen_hero_content_desc, artistName),
+                contentDescription = stringResource(
+                    R.string.artist_detail_screen_hero_content_desc,
+                    artistName
+                ),
                 contentScale = ContentScale.Crop,
                 error = ColorPainter(Color.Transparent),
                 modifier = Modifier.fillMaxSize()
@@ -355,8 +364,8 @@ private fun MemberItem(member: MemberEntity) {
         ImageRequest.Builder(context)
             .data(member.imageUrl)
             // Tamaño fijo para evitar bitmaps sobredimensionados en el LazyRow
-            .size(Size(56, 56))
-            .scale(Scale.FILL)
+            .size(Size(128, Dimension.Undefined))
+            .scale(Scale.FIT)
             .crossfade(200)
             .memoryCacheKey("member_${member.id}")
             .diskCacheKey("member_${member.id}")
@@ -366,26 +375,25 @@ private fun MemberItem(member: MemberEntity) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(6.dp),
-        modifier = Modifier.width(64.dp)
+        modifier = Modifier.width(72.dp)
     ) {
         Box(
             modifier = Modifier
-                .size(56.dp)
+                .size(64.dp)
                 .clip(CircleShape)
                 // Fondo siempre presente como placeholder
                 .background(Neutral15)
                 .then(
-                    // Borde verde para miembros activos
-                    // if (member.active) Modifier.border(1.5.dp, Green40, CircleShape)
                     Modifier.border(1.dp, NeutralVariant20, CircleShape)
                 ),
-            contentAlignment = Alignment.Center
+            contentAlignment = Alignment.TopCenter
         ) {
             if (member.imageUrl.isNotBlank()) {
                 AsyncImage(
                     model = imageRequest,
                     contentDescription = member.name,
                     contentScale = ContentScale.Crop,
+                    alignment = Alignment.TopCenter,
                     error = ColorPainter(Color.Transparent),
                     modifier = Modifier.fillMaxSize()
                 )
@@ -394,7 +402,7 @@ private fun MemberItem(member: MemberEntity) {
                     imageVector = Icons.Default.Person,
                     contentDescription = null,
                     tint = NeutralVariant40,
-                    modifier = Modifier.size(28.dp)
+                    modifier = Modifier.size(32.dp)
                 )
             }
         }
@@ -402,7 +410,7 @@ private fun MemberItem(member: MemberEntity) {
         Text(
             text = member.name,
             fontSize = 11.sp,
-            color = NeutralVariant90, //else NeutralVariant40,
+            color = NeutralVariant90,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis,
             textAlign = androidx.compose.ui.text.style.TextAlign.Center,
