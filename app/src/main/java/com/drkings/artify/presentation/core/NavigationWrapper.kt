@@ -11,7 +11,9 @@ fun NavigationWrapper() {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = Search) {
         composable<Search> {
-            SearchScreen()
+            SearchScreen(navigateToDetails = {
+                // navController.navigate(ArtistDetails)
+            })
         }
     }
 }

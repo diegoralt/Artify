@@ -31,8 +31,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.drkings.artify.presentation.model.Artist
-import com.drkings.artify.presentation.model.ArtistType
+import com.drkings.artify.domain.entity.ArtistEntity
+import com.drkings.artify.domain.entity.ArtistType
 import com.drkings.artify.ui.theme.Blue80
 import com.drkings.artify.ui.theme.Green60
 import com.drkings.artify.ui.theme.NeutralVariant20
@@ -42,7 +42,7 @@ import com.drkings.artify.ui.theme.NeutralVariant90
 
 @Composable
 fun ArtistResultItem(
-    artist: Artist,
+    artist: ArtistEntity,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -85,7 +85,7 @@ fun ArtistResultItem(
 }
 
 @Composable
-private fun ArtistAvatar(artist: Artist) {
+private fun ArtistAvatar(artist: ArtistEntity) {
     val avatarGradient = when (artist.type) {
         ArtistType.BAND -> Brush.linearGradient(
             colors = listOf(Color(0xFF1a3a2a), Color(0xFF2a5a3a)),
@@ -166,7 +166,7 @@ private fun Modifier.drawBottomBorder(color: Color): Modifier = this.then(
 @Composable
 private fun ArtistResultItemBandPreview() {
     ArtistResultItem(
-        artist = Artist(
+        artist = ArtistEntity(
             name = "The Beatles",
             type = ArtistType.BAND,
             thumbUrl = null
@@ -179,7 +179,7 @@ private fun ArtistResultItemBandPreview() {
 @Composable
 private fun ArtistResultItemSoloPreview() {
     ArtistResultItem(
-        artist = Artist(
+        artist = ArtistEntity(
             name = "John Lennon",
             type = ArtistType.ARTIST,
             thumbUrl = null

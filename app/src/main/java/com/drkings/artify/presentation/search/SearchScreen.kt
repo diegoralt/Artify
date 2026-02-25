@@ -38,9 +38,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateSetOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -50,11 +48,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.drkings.artify.R
-import com.drkings.artify.presentation.model.Artist
+import com.drkings.artify.domain.entity.ArtistEntity
 import com.drkings.artify.ui.theme.Green40
 import com.drkings.artify.ui.theme.Green60
 import com.drkings.artify.ui.theme.Neutral15
@@ -67,13 +66,12 @@ import com.drkings.artify.ui.theme.NeutralVariant90
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-@Preview
 fun SearchScreen(
-    //onArtistClick: (Int) -> Unit
+    navigateToDetails: (String) -> Unit,
+    searchViewModel: SearchViewModel = hiltViewModel()
 ) {
-    //val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    var uiState by remember { mutableStateSetOf(SearchUiState.Empty) }
-    // val query by viewModel.query.collectAsStateWithLifecycle()
+    val uiState by searchViewModel.uiState.collectAsStateWithLifecycle()
+    val query by searchViewModel.query.collectAsStateWithLifecycle()
 
     Scaffold { padding ->
         Column(
@@ -91,8 +89,8 @@ fun SearchScreen(
             )
 
             SearchField(
-                query = "",//query,
-                onQueryChange = {},
+                query = query,
+                onQueryChange = searchViewModel::onQueryChange,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 20.dp, vertical = 8.dp)
@@ -115,8 +113,8 @@ fun SearchScreen(
                     is SearchUiState.Success -> SearchResultsList(
                         results = state.artist,
                         isLoadingNextPage = state.isLoadingNextPage,
-                        onArtistClick = {}, //onArtistClick,
-                        onLoadMore = {} //viewModel::loadNextPage
+                        onArtistClick = navigateToDetails,
+                        onLoadMore = searchViewModel::loadNextPage
                     )
                 }
             }
@@ -273,7 +271,7 @@ private fun ErrorContent(message: String, onRetry: () -> Unit) {
 
 @Composable
 private fun SearchResultsList(
-    results: List<Artist>,
+    results: List<ArtistEntity>,
     isLoadingNextPage: Boolean,
     onArtistClick: (String) -> Unit,
     onLoadMore: () -> Unit

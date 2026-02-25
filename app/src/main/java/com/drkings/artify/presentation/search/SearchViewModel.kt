@@ -1,15 +1,136 @@
 package com.drkings.artify.presentation.search
 
 import androidx.lifecycle.ViewModel
-import com.drkings.artify.presentation.model.Artist
+import androidx.lifecycle.viewModelScope
+import com.drkings.artify.domain.entity.ArtistEntity
+import com.drkings.artify.domain.usecase.SearchUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class SearchViewModel: ViewModel() {
+@HiltViewModel
+class SearchViewModel @Inject constructor(searchUseCase: SearchUseCase) : ViewModel() {
     private val _uiState = MutableStateFlow<SearchUiState>(SearchUiState.Empty)
     val uiState = _uiState.asStateFlow()
 
+    private val _query = MutableStateFlow("")
+    val query = _query.asStateFlow()
 
+    private var currentPage = FIRST_PAGE
+    private var currentQuery = ""
+    private var hasReachedEnd = false
+
+    init {
+        observeQueryWithDebounce()
+    }
+
+    private fun observeQueryWithDebounce() {
+        viewModelScope.launch {
+            _query
+                .debounce(DEBOUNCE_MS)
+                .filter { it.isNotBlank() }       // ignora queries vacíos
+                .distinctUntilChanged()            // ignora el mismo valor repetido
+                .collectLatest { query ->
+                    resetPaginationState()
+                    performSearch(query = query, page = FIRST_PAGE)
+                }
+        }
+    }
+
+    fun onQueryChange(newQuery: String) {
+        _query.value = newQuery
+        currentQuery = newQuery
+
+        if (newQuery.isBlank()) {
+            _uiState.value = SearchUiState.Empty
+        }
+    }
+
+    fun loadNextPage() {
+        if (hasReachedEnd) return
+
+        val current = _uiState.value as? SearchUiState.Success ?: return
+
+        // Guard: si ya está cargando la siguiente página, descartar la llamada
+        if (current.isLoadingNextPage) return
+
+        viewModelScope.launch {
+            // Notifica a la UI para mostrar los skeletons al final de la lista
+            _uiState.value = current.copy(isLoadingNextPage = true)
+            currentPage++
+
+            searchUseCase(
+                query = currentQuery,
+                page = currentPage,
+                perPage = PAGE_SIZE
+            )
+                .onSuccess { newResults ->
+                    // Si Discogs devuelve menos items que PAGE_SIZE, no hay más páginas
+                    if (newResults.size < PAGE_SIZE) hasReachedEnd = true
+
+                    _uiState.value = current.copy(
+                        // Acumulación: los nuevos resultados se agregan a los existentes
+                        results = current.results + newResults,
+                        isLoadingNextPage = false
+                    )
+                }
+                .onFailure {
+                    // Revertir el contador para que el próximo intento pida
+                    // la misma página fallida, no la siguiente
+                    currentPage--
+                    _uiState.value = current.copy(isLoadingNextPage = false)
+                }
+        }
+    }
+
+    fun retry() {
+        if (currentQuery.isBlank()) return
+        resetPaginationState()
+        performSearch(query = currentQuery, page = FIRST_PAGE)
+    }
+
+    private fun performSearch(query: String, page: Int) {
+        viewModelScope.launch {
+            _uiState.value = SearchUiState.Loading
+
+            searchUseCase(
+                query = query,
+                page = page,
+                perPage = PAGE_SIZE
+            )
+                .onSuccess { results ->
+                    _uiState.value = if (results.isEmpty()) {
+                        // Discogs respondió OK pero sin resultados para este query
+                        SearchUiState.Empty
+                    } else {
+                        SearchUiState.Success(results = results)
+                    }
+                }
+                .onFailure { error ->
+                    _uiState.value = SearchUiState.Error(
+                        // Usa mensaje técnico en debug; en producción mapear a string de recurso
+                        message = error.message ?: "Unknown error"
+                    )
+                }
+        }
+    }
+
+    private fun resetPaginationState() {
+        currentPage = FIRST_PAGE
+        hasReachedEnd = false
+    }
+
+    private companion object {
+        const val DEBOUNCE_MS = 400L  // ms de espera antes de disparar búsqueda
+        const val PAGE_SIZE = 30    // resultados por página
+        const val FIRST_PAGE = 1
+    }
 }
 
 sealed interface SearchUiState {
@@ -17,7 +138,7 @@ sealed interface SearchUiState {
     object Loading : SearchUiState
     data class Error(val message: String) : SearchUiState
     data class Success(
-        val artist: List<Artist>,
+        val artist: List<ArtistEntity>,
         val isLoadingNextPage: Boolean,
         val onArtistClick: (String) -> Unit,
         val onLoadMore: () -> Unit

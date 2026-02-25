@@ -1,6 +1,6 @@
-package com.drkings.artify.presentation.model
+package com.drkings.artify.domain.entity
 
-data class Artist(
+data class ArtistEntity(
     val id: String = "",
     val name: String = "Coldplay",
     val type: ArtistType = ArtistType.BAND,
