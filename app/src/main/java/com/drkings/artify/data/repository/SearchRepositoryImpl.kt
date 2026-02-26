@@ -8,9 +8,9 @@ import javax.inject.Inject
 
 class SearchRepositoryImpl @Inject constructor(val apiService: ApiService) : SearchRepository {
     override suspend fun search(query: String, page: Int, perPage: Int): SearchEntity {
-        val searchResponse = apiService.search(query, TYPE_SEARCH, page, perPage)
+        val response = apiService.search(query, TYPE_SEARCH, page, perPage)
 
-        return searchResponse.toDomain()
+        return response.toDomain()
     }
 
     private companion object{

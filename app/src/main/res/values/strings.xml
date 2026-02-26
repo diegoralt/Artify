@@ -1,4 +1,5 @@
 <resources>
+    <!-- Search Screen -->
     <string name="app_name">Artify</string>
     <string name="search_screen_hint">Search for an artist…</string>
     <string name="search_screen_empty_title">Discover your favorite artists</string>
@@ -7,4 +8,19 @@
     <string name="search_screen_error_retry">Error while getting information</string>
     <string name="search_screen_clear_content_desc">Close icon</string>
     <string name="search_screen_search_content_desc">Search icon</string>
+
+    <!-- Artist Detail Screen -->
+    <string name="artist_detail_screen_hero_content_desc">%1$s artist image</string>
+    <string name="artist_detail_screen_biography">BIOGRAPHY</string>
+    <string name="artist_detail_screen_bio_more">Read more</string>
+    <string name="artist_detail_screen_bio_less">Read less</string>
+    <string name="artist_detail_screen_members">MEMBERS</string>
+    <string name="artist_detail_screen_discography_button">View Discography</string>
+
+    <!-- Common -->
+    <string name="common_back_button_content_desc">Back button"</string>
+
+    <!-- Error -->
+    <string name="error_message">We couldn’t load this content right now.\nCheck your connection and try again.</string>
+    <string name="error_retry_button">Try Again</string>
 </resources>

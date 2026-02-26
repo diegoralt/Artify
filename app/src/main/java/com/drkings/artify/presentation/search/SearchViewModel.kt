@@ -24,7 +24,7 @@ class SearchViewModel @Inject constructor(private val searchUseCase: SearchUseCa
     val query = _query.asStateFlow()
 
     private var currentPage = FIRST_PAGE
-    private var totalPages  = Int.MAX_VALUE
+    private var totalPages = Int.MAX_VALUE
     private var currentQuery = ""
     private val hasReachedEnd get() = currentPage >= totalPages
 
@@ -45,7 +45,7 @@ class SearchViewModel @Inject constructor(private val searchUseCase: SearchUseCa
                         _uiState.value = current.copy(isLoadingNextPage = false)
                     }
                     resetPaginationState()
-                    performSearch(query = query, page = FIRST_PAGE)
+                    performSearch(query = query)
                 }
         }
     }
@@ -99,16 +99,16 @@ class SearchViewModel @Inject constructor(private val searchUseCase: SearchUseCa
     fun retry() {
         if (currentQuery.isBlank()) return
         resetPaginationState()
-        performSearch(query = currentQuery, page = FIRST_PAGE)
+        performSearch(query = currentQuery)
     }
 
-    private fun performSearch(query: String, page: Int) {
+    private fun performSearch(query: String) {
         viewModelScope.launch {
             _uiState.value = SearchUiState.Loading
 
             searchUseCase(
                 query = query,
-                page = page,
+                page = FIRST_PAGE,
                 perPage = PAGE_SIZE
             )
                 .onSuccess { result ->
@@ -121,18 +121,15 @@ class SearchViewModel @Inject constructor(private val searchUseCase: SearchUseCa
                         SearchUiState.Success(artists = result.artists, isLoadingNextPage = false)
                     }
                 }
-                .onFailure { error ->
-                    _uiState.value = SearchUiState.Error(
-                        // Usa mensaje técnico en debug; en producción mapear a string de recurso
-                        message = error.message ?: "Unknown error"
-                    )
+                .onFailure {
+                    _uiState.value = SearchUiState.Error
                 }
         }
     }
 
     private fun resetPaginationState() {
         currentPage = FIRST_PAGE
-        totalPages  = Int.MAX_VALUE
+        totalPages = Int.MAX_VALUE
     }
 
     private companion object {
@@ -145,7 +142,7 @@ class SearchViewModel @Inject constructor(private val searchUseCase: SearchUseCa
 sealed interface SearchUiState {
     data class Empty(val isBeforeQuery: Boolean) : SearchUiState
     object Loading : SearchUiState
-    data class Error(val message: String) : SearchUiState
+    object Error : SearchUiState
     data class Success(
         val artists: List<ArtistEntity>,
         val isLoadingNextPage: Boolean
