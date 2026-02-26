@@ -13,17 +13,19 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -49,12 +51,14 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -64,6 +68,9 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -93,6 +100,8 @@ import com.drkings.artify.ui.theme.NeutralVariant20
 import com.drkings.artify.ui.theme.NeutralVariant40
 import com.drkings.artify.ui.theme.NeutralVariant60
 import com.drkings.artify.ui.theme.NeutralVariant90
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -112,8 +121,7 @@ fun AlbumsDetailScreen(
                         fontSize = 18.sp,
                         fontWeight = FontWeight.SemiBold,
                         color = NeutralVariant90,
-                        modifier = Modifier
-                            .padding(start = 4.dp)
+                        modifier = Modifier.padding(start = 4.dp)
                     )
                 },
                 navigationIcon = {
@@ -136,12 +144,14 @@ fun AlbumsDetailScreen(
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Neutral6)
             )
         },
+        modifier = Modifier.fillMaxSize(),
+        containerColor = Neutral6,
+        contentColor = NeutralVariant90
     ) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .background(Neutral6)
         ) {
             when (val state = uiState) {
                 is AlbumsUiState.Loading -> AlbumsLoadingContent()
@@ -163,10 +173,6 @@ fun AlbumsDetailScreen(
     }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Success content
-// ─────────────────────────────────────────────────────────────────────────────
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun AlbumsSuccessContent(
@@ -179,20 +185,41 @@ private fun AlbumsSuccessContent(
     onSortChange: (SortOrder) -> Unit
 ) {
     val listState = rememberLazyListState()
+    val scope = rememberCoroutineScope()
 
-    // Controla qué bottom sheet está abierto — null = ninguno
     var activeSheet by remember { mutableStateOf<ActiveSheet?>(null) }
+
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
+    LaunchedEffect(activeSheet) {
+        if (activeSheet == null) return@LaunchedEffect
+        delay(50)
+        sheetState.show()
+    }
 
     // Dispara loadNextPage cuando el usuario está a 3 items del final
     val shouldLoadMore by remember {
         derivedStateOf {
-            val lastVisible = listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
-            val total = listState.layoutInfo.totalItemsCount
-            total > 0 && lastVisible >= total - 3
+            val info = listState.layoutInfo
+            val lastVisible = info.visibleItemsInfo.lastOrNull()?.index ?: 0
+            val total = info.totalItemsCount
+            total > 0 && lastVisible >= total - 5 && !state.isLoadingNextPage
         }
     }
     LaunchedEffect(shouldLoadMore) {
-        if (shouldLoadMore && !state.isLoadingNextPage) onLoadMore()
+        if (shouldLoadMore) onLoadMore()
+    }
+
+    val albumsKey = state.albums.firstOrNull()?.id
+    val sortKey = state.sortOrder
+    val filterKey = state.filterState
+
+    LaunchedEffect(albumsKey, sortKey, filterKey) {
+        // Solo hace scroll si ya hay contenido visible y no estamos en la
+        // posición 0 (evita scroll innecesario en la carga inicial).
+        if (listState.firstVisibleItemIndex > 0) {
+            listState.animateScrollToItem(0)
+        }
     }
 
     Box(
@@ -212,7 +239,9 @@ private fun AlbumsSuccessContent(
             )
 
             // ── Sort indicator ────────────────────────────────────────────────
-            SortIndicatorRow(sortOrder = state.sortOrder, onSortClick = { activeSheet = ActiveSheet.SORT })
+            SortIndicatorRow(
+                sortOrder = state.sortOrder,
+                onSortClick = { activeSheet = ActiveSheet.SORT })
 
             // ── List / empty ──────────────────────────────────────────────────
             if (state.albums.isEmpty()) {
@@ -230,9 +259,11 @@ private fun AlbumsSuccessContent(
         if (activeSheet != null) {
             ModalBottomSheet(
                 onDismissRequest = { activeSheet = null },
+                sheetState = sheetState,
                 containerColor = Neutral15,
                 contentColor = NeutralVariant90,
-                shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp)
+                shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
+                contentWindowInsets = { WindowInsets(0) }
             ) {
                 when (activeSheet) {
                     ActiveSheet.YEAR -> YearFilterSheet(
@@ -240,7 +271,11 @@ private fun AlbumsSuccessContent(
                         selected = state.filterState.years,
                         onToggle = onToggleYear,
                         onClear = { state.filterState.years.forEach { onToggleYear(it) } },
-                        onApply = { activeSheet = null }
+                        onApply = {
+                            scope.launch { sheetState.hide() }.invokeOnCompletion {
+                                if (!sheetState.isVisible) activeSheet = null
+                            }
+                        }
                     )
 
                     ActiveSheet.GENRE -> GenreFilterSheet(
@@ -248,7 +283,11 @@ private fun AlbumsSuccessContent(
                         selected = state.filterState.genres,
                         onToggle = onToggleGenre,
                         onClear = { state.filterState.genres.forEach { onToggleGenre(it) } },
-                        onApply = { activeSheet = null }
+                        onApply = {
+                            scope.launch { sheetState.hide() }.invokeOnCompletion {
+                                if (!sheetState.isVisible) activeSheet = null
+                            }
+                        }
                     )
 
                     ActiveSheet.LABEL -> LabelFilterSheet(
@@ -256,14 +295,20 @@ private fun AlbumsSuccessContent(
                         selected = state.filterState.labels,
                         onToggle = onToggleLabel,
                         onClear = { state.filterState.labels.forEach { onToggleLabel(it) } },
-                        onApply = { activeSheet = null }
+                        onApply = {
+                            scope.launch { sheetState.hide() }.invokeOnCompletion {
+                                if (!sheetState.isVisible) activeSheet = null
+                            }
+                        }
                     )
 
                     ActiveSheet.SORT -> SortPickerSheet(
                         current = state.sortOrder,
                         onSelect = { order ->
                             onSortChange(order)
-                            activeSheet = null
+                            scope.launch { sheetState.hide() }.invokeOnCompletion {
+                                if (!sheetState.isVisible) activeSheet = null
+                            }
                         }
                     )
 
@@ -273,10 +318,6 @@ private fun AlbumsSuccessContent(
         }
     }
 }
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Sort indicator
-// ─────────────────────────────────────────────────────────────────────────────
 
 @Composable
 private fun SortIndicatorRow(sortOrder: SortOrder, onSortClick: () -> Unit) {
@@ -308,11 +349,6 @@ private fun SortIndicatorRow(sortOrder: SortOrder, onSortClick: () -> Unit) {
         }
     }
 }
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Filter chip bar — siempre visible, replica el mockup
-// All activo = sin filtros. Year/Genre/Label con ↓ abren sheet individual.
-// ─────────────────────────────────────────────────────────────────────────────
 
 @Composable
 private fun FilterChipBar(
@@ -403,10 +439,6 @@ private fun FilterBarChip(
     }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Albums lazy list
-// ─────────────────────────────────────────────────────────────────────────────
-
 @Composable
 private fun AlbumsList(
     albums: List<AlbumEntity>,
@@ -433,10 +465,6 @@ private fun AlbumsList(
         }
     }
 }
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Album row
-// ─────────────────────────────────────────────────────────────────────────────
 
 @Composable
 private fun AlbumRow(album: AlbumEntity) {
@@ -549,10 +577,6 @@ private fun AlbumRow(album: AlbumEntity) {
     }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Album row skeleton
-// ─────────────────────────────────────────────────────────────────────────────
-
 @Composable
 private fun AlbumRowSkeleton() {
     val shimmer = rememberShimmerBrush()
@@ -616,10 +640,6 @@ private fun rememberShimmerBrush(): Brush {
     )
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Empty state (cuando los filtros no devuelven resultados)
-// ─────────────────────────────────────────────────────────────────────────────
-
 @Composable
 private fun AlbumsEmptyFiltered(onClearFilters: () -> Unit) {
     Box(
@@ -666,10 +686,6 @@ private fun AlbumsEmptyFiltered(onClearFilters: () -> Unit) {
     }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Filter sheets individuales — Year / Genre / Label
-// ─────────────────────────────────────────────────────────────────────────────
-
 @Composable
 private fun YearFilterSheet(
     available: List<Int>,
@@ -692,11 +708,15 @@ private fun YearFilterSheet(
         onClear = onClear,
         onApply = onApply
     ) {
-        decades.forEach { (decade, yearsInDecade) ->
-            val allSelected = yearsInDecade.all { it in selected }
+        // items() vive en LazyListScope — cada década es un item lazy
+        items(
+            count = decades.size,
+            key = { decades[it].key }
+        ) { index ->
+            val (decade, yearsInDecade) = decades[index]
             FilterOptionRow(
                 label = "${decade}s",
-                checked = allSelected,
+                checked = yearsInDecade.all { it in selected },
                 onClick = { yearsInDecade.forEach { onToggle(it) } }
             )
         }
@@ -717,7 +737,11 @@ private fun GenreFilterSheet(
         onClear = onClear,
         onApply = onApply
     ) {
-        available.forEach { genre ->
+        items(
+            count = available.size,
+            key = { available[it] }
+        ) { index ->
+            val genre = available[index]
             FilterOptionRow(
                 label = genre,
                 checked = genre in selected,
@@ -741,7 +765,11 @@ private fun LabelFilterSheet(
         onClear = onClear,
         onApply = onApply
     ) {
-        available.forEach { label ->
+        items(
+            count = available.size,
+            key = { available[it] }
+        ) { index ->
+            val label = available[index]
             FilterOptionRow(
                 label = label,
                 checked = label in selected,
@@ -751,28 +779,26 @@ private fun LabelFilterSheet(
     }
 }
 
-// ── Scaffold común para los tres sheets ──────────────────────────────────────
-
 @Composable
 private fun FilterSheetScaffold(
     title: String,
     hasActive: Boolean,
     onClear: () -> Unit,
     onApply: () -> Unit,
-    content: @Composable ColumnScope.() -> Unit
+    content: LazyListScope.() -> Unit
 ) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 20.dp)
-            .padding(bottom = 36.dp),
-        verticalArrangement = Arrangement.spacedBy(4.dp)
+            .fillMaxHeight(0.9f)
+            .navigationBarsPadding()
     ) {
         // Encabezado
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 12.dp),
+                .padding(horizontal = 20.dp)
+                .padding(top = 4.dp, bottom = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -794,16 +820,37 @@ private fun FilterSheetScaffold(
             }
         }
 
-        // Opciones inyectadas por cada sheet
-        content()
+        val lazyListState = rememberLazyListState()
+        val nestedScrollConnection = remember(lazyListState) {
+            object : NestedScrollConnection {
+                override fun onPreScroll(
+                    available: Offset,
+                    source: NestedScrollSource
+                ): Offset {
+                    val atTop = !lazyListState.canScrollBackward
+                    return if (available.y > 0 && atTop) Offset.Zero
+                    else Offset.Zero  // en todos los demás casos, tampoco consumimos (la lista lo maneja)
+                }
+            }
+        }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        LazyColumn(
+            state = lazyListState,
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .nestedScroll(nestedScrollConnection),
+            contentPadding = PaddingValues(horizontal = 20.dp, vertical = 4.dp),
+            content = content
+        )
 
         // Apply
         Button(
             onClick = onApply,
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(horizontal = 20.dp)
+                .padding(top = 12.dp, bottom = 24.dp)
                 .height(48.dp),
             shape = RoundedCornerShape(12.dp),
             colors = ButtonDefaults.buttonColors(containerColor = Green60)
@@ -817,8 +864,6 @@ private fun FilterSheetScaffold(
         }
     }
 }
-
-// ── Fila de opción con checkbox ───────────────────────────────────────────────
 
 @Composable
 private fun FilterOptionRow(
@@ -864,10 +909,6 @@ private fun FilterOptionRow(
         }
     }
 }
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Sort picker bottom sheet
-// ─────────────────────────────────────────────────────────────────────────────
 
 @Composable
 private fun SortPickerSheet(
@@ -925,10 +966,6 @@ private fun SortPickerSheet(
     }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Loading
-// ─────────────────────────────────────────────────────────────────────────────
-
 @Composable
 private fun AlbumsLoadingContent() {
     Box(
@@ -944,10 +981,6 @@ private fun AlbumsLoadingContent() {
     }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Modifier extension: borde inferior sin usar Divider (evita recomposición extra)
-// ─────────────────────────────────────────────────────────────────────────────
-
 private fun Modifier.bottomDivider(color: Color): Modifier = this.drawWithContent {
     drawContent()
     drawLine(
@@ -958,15 +991,7 @@ private fun Modifier.bottomDivider(color: Color): Modifier = this.drawWithConten
     )
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Enum interno para controlar qué sheet está activo
-// ─────────────────────────────────────────────────────────────────────────────
-
 private enum class ActiveSheet { YEAR, GENRE, LABEL, SORT }
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Preview
-// ─────────────────────────────────────────────────────────────────────────────
 
 @Preview(showBackground = true, backgroundColor = 0xFF060E0B)
 @Composable

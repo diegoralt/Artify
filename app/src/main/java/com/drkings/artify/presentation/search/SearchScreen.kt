@@ -72,25 +72,30 @@ fun SearchScreen(
 ) {
     val uiState by searchViewModel.uiState.collectAsStateWithLifecycle()
     val query by searchViewModel.query.collectAsStateWithLifecycle()
+    val listState = rememberLazyListState()
 
-    Scaffold(topBar = {
-        TopAppBar(
-            title = {
-                Text(
-                    text = stringResource(R.string.app_name),
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 22.sp,
-                    color = NeutralVariant90
-                )
-            },
-            colors = TopAppBarDefaults.topAppBarColors(containerColor = Neutral6)
-        )
-    }) { padding ->
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = stringResource(R.string.app_name),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 22.sp,
+                        color = NeutralVariant90
+                    )
+                },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Neutral6)
+            )
+        },
+        modifier = Modifier.fillMaxSize(),
+        containerColor = Neutral6,
+        contentColor = NeutralVariant90
+    ) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .background(Neutral6)
         ) {
             SearchField(
                 query = query,
@@ -116,6 +121,7 @@ fun SearchScreen(
                     is SearchUiState.Success -> SearchResultsList(
                         results = state.artists,
                         isLoadingNextPage = state.isLoadingNextPage,
+                        listState = listState,
                         onArtistClick = navigateToDetails,
                         onLoadMore = searchViewModel::loadNextPage
                     )
@@ -246,32 +252,37 @@ private fun LoadingContent() {
 private fun SearchResultsList(
     results: List<ArtistEntity>,
     isLoadingNextPage: Boolean,
+    listState: LazyListState,
     onArtistClick: (Int) -> Unit,
     onLoadMore: () -> Unit
 ) {
-    val listState = rememberLazyListState()
-    val isScrolledToEnd by remember { derivedStateOf { listState.isScrolledToEnd() } }
-
-    // Dispara paginación cuando el usuario llega al final
-    LaunchedEffect(isScrolledToEnd) {
-        if (isScrolledToEnd) onLoadMore()
+    val shouldLoadMore by remember {
+        derivedStateOf {
+            val layoutInfo = listState.layoutInfo
+            val totalItems = layoutInfo.totalItemsCount
+            val lastVisibleIndex = layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
+            lastVisibleIndex >= totalItems - 3 && totalItems > 0
+        }
     }
 
-    LazyColumn(state = listState, modifier = Modifier.fillMaxSize()) {
-        items(items = results, key = { it.id }) { artist ->
+    LaunchedEffect(shouldLoadMore) {
+        if (shouldLoadMore && !isLoadingNextPage) onLoadMore()
+    }
+
+    LazyColumn(
+        state = listState,
+        modifier = Modifier.fillMaxSize()
+    ) {
+        items(items = results, key = { artist -> artist.id }) { artist ->
             ArtistResultItem(
                 artist = artist,
                 onClick = { onArtistClick(artist.id) }
             )
         }
         if (isLoadingNextPage) {
-            items(2) { SkeletonItem() }
+            items(count = 2, key = { index -> "skeleton_$index" }) {
+                SkeletonItem()
+            }
         }
     }
-}
-
-// Extension para detectar scroll al final de la lista
-private fun LazyListState.isScrolledToEnd(): Boolean {
-    val lastVisible = layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: return false
-    return lastVisible >= layoutInfo.totalItemsCount - 1
 }

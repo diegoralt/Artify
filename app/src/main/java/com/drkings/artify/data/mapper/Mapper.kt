@@ -46,7 +46,7 @@ fun ArtistDetailResponse.toDomain(): ArtistDetailEntity {
         id = id,
         name = name,
         profile = profile,
-        image = images.find { it.type == "primary" }?.resourceUrl.orEmpty()
+        image = images?.find { it.type == "primary" }?.resourceUrl.orEmpty()
     )
 }
 
@@ -55,7 +55,7 @@ fun ArtistDetailResponse.toDomain(imageByArtistId: Map<Int, String>): ArtistDeta
         id = id,
         name = name,
         profile = profile,
-        image = images.find { it.type == "primary" }?.resourceUrl.orEmpty(),
+        image = images?.find { it.type == "primary" }?.resourceUrl.orEmpty(),
         members = members?.map { it.toDomain(imageByArtistId[it.id].orEmpty()) }
     )
 }
