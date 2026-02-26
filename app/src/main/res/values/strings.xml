@@ -1,6 +1,10 @@
 <resources>
-    <!-- Search Screen -->
     <string name="app_name">Artify</string>
+
+    <!-- Splash Screen -->
+    <string name="splash_screen_subtitle">FIND THE ARTIST. FEEL THE MUSIC.</string>
+
+    <!-- Search Screen -->
     <string name="search_screen_hint">Search for an artist…</string>
     <string name="search_screen_empty_title">Discover your favorite artists</string>
     <string name="search_screen_empty_subtitle">Search by name to explore discographies, band members and more</string>

@@ -3,6 +3,9 @@ package com.drkings.artify.presentation.core
 import kotlinx.serialization.Serializable
 
 @Serializable
+object Splash
+
+@Serializable
 object Search
 
 @Serializable
