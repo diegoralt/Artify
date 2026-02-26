@@ -27,6 +27,7 @@ class AlbumsDetailViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val artistId: Int = savedStateHandle.toRoute<AlbumsDetail>().artistId
+    val artistName: String = savedStateHandle.toRoute<AlbumsDetail>().artistName
 
     private var currentPage = FIRST_PAGE
     private var totalPages = Int.MAX_VALUE

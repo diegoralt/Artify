@@ -27,6 +27,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -43,8 +44,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -90,29 +94,72 @@ import com.drkings.artify.ui.theme.NeutralVariant40
 import com.drkings.artify.ui.theme.NeutralVariant60
 import com.drkings.artify.ui.theme.NeutralVariant90
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AlbumsDetailScreen(
     viewModel: AlbumsDetailViewModel = hiltViewModel(),
     navigateToBack: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val artistName by remember { mutableStateOf(viewModel.artistName) }
 
-    when (val state = uiState) {
-        is AlbumsUiState.Loading -> AlbumsLoadingContent()
-        is AlbumsUiState.Error -> ErrorContent(
-            onRetry = viewModel::retry
-        )
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = artistName,
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = NeutralVariant90,
+                        modifier = Modifier
+                            .padding(start = 4.dp)
+                    )
+                },
+                navigationIcon = {
+                    IconButton(
+                        onClick = navigateToBack,
+                        modifier = Modifier
+                            .statusBarsPadding()
+                            .padding(start = 8.dp, top = 4.dp)
+                            .size(40.dp)
+                            .clip(CircleShape)
+                            .background(Neutral6.copy(alpha = 0.6f))
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.common_back_button_content_desc),
+                            tint = NeutralVariant90
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Neutral6)
+            )
+        },
+    ) { padding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .background(Neutral6)
+        ) {
+            when (val state = uiState) {
+                is AlbumsUiState.Loading -> AlbumsLoadingContent()
+                is AlbumsUiState.Error -> ErrorContent(
+                    onRetry = viewModel::retry
+                )
 
-        is AlbumsUiState.Success -> AlbumsSuccessContent(
-            state = state,
-            onBackClick = navigateToBack,
-            onLoadMore = viewModel::loadNextPage,
-            onToggleYear = viewModel::toggleYear,
-            onToggleGenre = viewModel::toggleGenre,
-            onToggleLabel = viewModel::toggleLabel,
-            onClearFilters = viewModel::clearFilters,
-            onSortChange = viewModel::setSortOrder
-        )
+                is AlbumsUiState.Success -> AlbumsSuccessContent(
+                    state = state,
+                    onLoadMore = viewModel::loadNextPage,
+                    onToggleYear = viewModel::toggleYear,
+                    onToggleGenre = viewModel::toggleGenre,
+                    onToggleLabel = viewModel::toggleLabel,
+                    onClearFilters = viewModel::clearFilters,
+                    onSortChange = viewModel::setSortOrder
+                )
+            }
+        }
     }
 }
 
@@ -124,7 +171,6 @@ fun AlbumsDetailScreen(
 @Composable
 private fun AlbumsSuccessContent(
     state: AlbumsUiState.Success,
-    onBackClick: () -> Unit,
     onLoadMore: () -> Unit,
     onToggleYear: (Int) -> Unit,
     onToggleGenre: (String) -> Unit,
@@ -156,12 +202,6 @@ private fun AlbumsSuccessContent(
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
 
-            // ── Top app bar ───────────────────────────────────────────────────
-            AlbumsTopBar(
-                onBackClick = onBackClick,
-                onSortClick = { activeSheet = ActiveSheet.SORT }
-            )
-
             // ── Filter chip bar — SIEMPRE visible, igual al mockup ────────────
             FilterChipBar(
                 filterState = state.filterState,
@@ -172,7 +212,7 @@ private fun AlbumsSuccessContent(
             )
 
             // ── Sort indicator ────────────────────────────────────────────────
-            SortIndicatorRow(sortOrder = state.sortOrder)
+            SortIndicatorRow(sortOrder = state.sortOrder, onSortClick = { activeSheet = ActiveSheet.SORT })
 
             // ── List / empty ──────────────────────────────────────────────────
             if (state.albums.isEmpty()) {
@@ -235,58 +275,11 @@ private fun AlbumsSuccessContent(
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Top app bar
-// ─────────────────────────────────────────────────────────────────────────────
-
-@Composable
-private fun AlbumsTopBar(
-    onBackClick: () -> Unit,
-    onSortClick: () -> Unit
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .statusBarsPadding()
-            .height(56.dp)
-            .padding(horizontal = 4.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(4.dp)
-    ) {
-        IconButton(onClick = onBackClick) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = stringResource(R.string.common_back_button_content_desc),
-                tint = NeutralVariant90
-            )
-        }
-
-        Text(
-            text = stringResource(R.string.albums_detail_screen_title),
-            fontSize = 18.sp,
-            fontWeight = FontWeight.SemiBold,
-            color = NeutralVariant90,
-            modifier = Modifier
-                .weight(1f)
-                .padding(start = 4.dp)
-        )
-
-        // Sort — único control en el top bar
-        IconButton(onClick = onSortClick) {
-            Icon(
-                imageVector = Icons.Default.SwapVert,
-                contentDescription = stringResource(R.string.albums_detail_screen_sort_content_desc),
-                tint = NeutralVariant60
-            )
-        }
-    }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
 // Sort indicator
 // ─────────────────────────────────────────────────────────────────────────────
 
 @Composable
-private fun SortIndicatorRow(sortOrder: SortOrder) {
+private fun SortIndicatorRow(sortOrder: SortOrder, onSortClick: () -> Unit) {
     val label = when (sortOrder) {
         SortOrder.NEWEST_FIRST -> stringResource(R.string.albums_detail_screen_sort_newest)
         SortOrder.OLDEST_FIRST -> stringResource(R.string.albums_detail_screen_sort_oldest)
@@ -300,11 +293,19 @@ private fun SortIndicatorRow(sortOrder: SortOrder) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = "${stringResource(R.string.albums_detail_screen_sort_prefix)} $label ↓",
+            text = "${stringResource(R.string.albums_detail_screen_sort_prefix)} $label",
             fontSize = 11.sp,
             color = Green60,
             fontWeight = FontWeight.SemiBold
         )
+
+        IconButton(onClick = onSortClick, modifier = Modifier.size(24.dp)) {
+            Icon(
+                imageVector = Icons.Default.SwapVert,
+                contentDescription = stringResource(R.string.albums_detail_screen_sort_content_desc),
+                tint = NeutralVariant60
+            )
+        }
     }
 }
 
@@ -1021,7 +1022,6 @@ private fun AlbumsDetailScreenPreview() {
             availableGenres = listOf("Alternative", "Pop", "Rock"),
             availableLabels = listOf("Parlophone")
         ),
-        onBackClick = {},
         onLoadMore = {},
         onToggleYear = {},
         onToggleGenre = {},

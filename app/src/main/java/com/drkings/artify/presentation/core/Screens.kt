@@ -9,4 +9,4 @@ object Search
 data class ArtistDetail(val artistId: Int)
 
 @Serializable
-data class AlbumsDetail(val artistId: Int)
+data class AlbumsDetail(val artistId: Int, val artistName: String)

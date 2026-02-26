@@ -18,8 +18,8 @@ fun NavigationWrapper() {
             })
         }
         composable<ArtistDetail> {
-            ArtistDetailScreen(navigateToBack = { navController.popBackStack() }, navigateToAlbums = { artistId ->
-                navController.navigate(AlbumsDetail(artistId))
+            ArtistDetailScreen(navigateToBack = { navController.popBackStack() }, navigateToAlbums = { artistId, artistName ->
+                navController.navigate(AlbumsDetail(artistId, artistName))
             })
         }
         composable<AlbumsDetail> {

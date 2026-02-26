@@ -59,6 +59,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.os.bundleOf
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
@@ -86,7 +87,7 @@ private const val BIO_COLLAPSED_LINES = 4
 fun ArtistDetailScreen(
     artistDetailViewModel: ArtistDetailViewModel = hiltViewModel(),
     navigateToBack: () -> Unit,
-    navigateToAlbums: (artistId: Int) -> Unit
+    navigateToAlbums: (artistId: Int, artistName: String) -> Unit
 ) {
     val uiState by artistDetailViewModel.uiState.collectAsStateWithLifecycle()
 
@@ -129,7 +130,7 @@ fun ArtistDetailScreen(
 
                 is ArtistDetailUiState.Success -> ArtistDetailContent(
                     artist = state.artist,
-                    onDiscographyClick = { navigateToAlbums(state.artist.id) }
+                    onDiscographyClick = { navigateToAlbums(state.artist.id, state.artist.name) }
                 )
             }
         }
