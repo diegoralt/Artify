@@ -5,7 +5,7 @@ data class ArtistDetailEntity(
     val name: String,
     val profile: String,
     val image: String,
-    val members: List<MemberEntity>
+    val members: List<MemberEntity>? = null
 )
 
 data class MemberEntity(

@@ -46,16 +46,25 @@ fun ArtistDetailResponse.toDomain(): ArtistDetailEntity {
         id = id,
         name = name,
         profile = profile,
-        image = images.find { it.type == "primary" }?.resourceUrl.orEmpty(),
-        members = members.map { it.toDomain() }
+        image = images.find { it.type == "primary" }?.resourceUrl.orEmpty()
     )
 }
 
-fun MemberResponse.toDomain(): MemberEntity {
+fun ArtistDetailResponse.toDomain(imageByArtistId: Map<Int, String>): ArtistDetailEntity {
+    return ArtistDetailEntity(
+        id = id,
+        name = name,
+        profile = profile,
+        image = images.find { it.type == "primary" }?.resourceUrl.orEmpty(),
+        members = members?.map { it.toDomain(imageByArtistId[it.id].orEmpty()) }
+    )
+}
+
+fun MemberResponse.toDomain(thumbnailUrl: String): MemberEntity {
     return MemberEntity(
         id = id,
         name = name,
-        imageUrl = thumbnailUrl.orEmpty()
+        imageUrl = thumbnailUrl
     )
 }
 

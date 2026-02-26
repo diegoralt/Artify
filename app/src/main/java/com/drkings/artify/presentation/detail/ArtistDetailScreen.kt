@@ -175,7 +175,7 @@ private fun ArtistDetailContent(
                     BiographySection(profile = artist.profile)
                 }
 
-                if (artist.members.isNotEmpty()) {
+                if (artist.members?.isNotEmpty() == true) {
                     MembersSection(members = artist.members)
                 }
 
