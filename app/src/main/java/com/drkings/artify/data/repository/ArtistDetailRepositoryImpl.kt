@@ -14,8 +14,8 @@ class ArtistDetailRepositoryImpl @Inject constructor(val apiService: ApiService)
     ArtistDetailRepository {
 
     override suspend fun getDetail(artistId: Int): ArtistDetailEntity {
-        try {
-            return coroutineScope {
+        return try {
+            coroutineScope {
                 val response = apiService.getArtistDetail(artistId)
 
                 if (response.members?.isNotEmpty() == true) {
