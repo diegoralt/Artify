@@ -9,7 +9,6 @@
     <string name="search_screen_empty_title">Discover your favorite artists</string>
     <string name="search_screen_empty_subtitle">Search by name to explore discographies, band members and more</string>
     <string name="search_screen_empty_suggestions">Could not find any search suggestions</string>
-    <string name="search_screen_error_retry">Error while getting information</string>
     <string name="search_screen_clear_content_desc">Close icon</string>
     <string name="search_screen_search_content_desc">Search icon</string>
 
@@ -22,14 +21,11 @@
     <string name="artist_detail_screen_discography_button">View Discography</string>
 
     <!-- Albums Detail Screen -->
-    <string name="albums_detail_screen_title">Albums</string>
-    <string name="albums_detail_screen_sort_content_desc">Sort albums</string>
-    <string name="albums_detail_screen_filter_content_desc">Filter albums</string>
+    =<string name="albums_detail_screen_sort_content_desc">Sort albums</string>
     <string name="albums_detail_screen_sort_title">Sort by</string>
     <string name="albums_detail_screen_sort_newest">Newest first</string>
     <string name="albums_detail_screen_sort_oldest">Oldest first</string>
     <string name="albums_detail_screen_sort_prefix">Sort:</string>
-    <string name="albums_detail_screen_filter_title">Filters</string>
     <string name="albums_detail_screen_filter_all">All</string>
     <string name="albums_detail_screen_filter_year">Year</string>
     <string name="albums_detail_screen_filter_genre">Genre</string>
