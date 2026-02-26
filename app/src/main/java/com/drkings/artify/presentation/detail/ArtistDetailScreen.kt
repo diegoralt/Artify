@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -50,6 +51,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -67,6 +69,7 @@ import coil3.request.crossfade
 import coil3.size.Dimension
 import coil3.size.Scale
 import coil3.size.Size
+import coil3.size.Size.Companion.ORIGINAL
 import com.drkings.artify.R
 import com.drkings.artify.domain.entity.ArtistDetailEntity
 import com.drkings.artify.domain.entity.MemberEntity
@@ -86,7 +89,7 @@ private const val BIO_COLLAPSED_LINES = 4
 fun ArtistDetailScreen(
     artistDetailViewModel: ArtistDetailViewModel = hiltViewModel(),
     navigateToBack: () -> Unit,
-    navigateToAlbums: (artistId: Int) -> Unit
+    navigateToAlbums: (artistId: Int, artistName: String) -> Unit
 ) {
     val uiState by artistDetailViewModel.uiState.collectAsStateWithLifecycle()
 
@@ -129,7 +132,7 @@ fun ArtistDetailScreen(
 
                 is ArtistDetailUiState.Success -> ArtistDetailContent(
                     artist = state.artist,
-                    onDiscographyClick = { navigateToAlbums(state.artist.id) }
+                    onDiscographyClick = { navigateToAlbums(state.artist.id, state.artist.name) }
                 )
             }
         }
@@ -174,7 +177,7 @@ private fun ArtistDetailContent(
                     BiographySection(profile = artist.profile)
                 }
 
-                if (artist.members.isNotEmpty()) {
+                if (artist.members?.isNotEmpty() == true) {
                     MembersSection(members = artist.members)
                 }
 
@@ -194,28 +197,28 @@ private fun HeroImageSection(
     val imageRequest = remember(imageUrl) {
         ImageRequest.Builder(context)
             .data(imageUrl)
-            .scale(Scale.FILL)
+            .scale(Scale.FIT)
             .crossfade(300)
+            // Tamaño original para evitar upscaling forzado en memoria
+            .size(ORIGINAL)
             .build()
     }
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(280.dp)
+            .height(320.dp)
+            .clip(RectangleShape)
     ) {
-        // Fondo degradado siempre presente como placeholder
         Box(
             modifier = Modifier
+                .fillMaxSize()
                 .drawBehind {
                     drawRect(
                         brush = Brush.linearGradient(
                             colors = listOf(Color(0xFF0D2019), Color(0xFF1A3A28)),
                             start = Offset(0f, 0f),
-                            end = Offset(
-                                size.width,
-                                size.height
-                            )  // ← coordenadas finitas garantizadas
+                            end = Offset(size.width, size.height)
                         )
                     )
                 }
@@ -228,17 +231,20 @@ private fun HeroImageSection(
                     R.string.artist_detail_screen_hero_content_desc,
                     artistName
                 ),
-                contentScale = ContentScale.Crop,
+                contentScale = ContentScale.FillWidth,
+                alignment = Alignment.TopStart,
                 error = ColorPainter(Color.Transparent),
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight(align = Alignment.Top, unbounded = true)
+
             )
         }
 
-        // Degradado inferior para transición suave hacia el fondo de la pantalla
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(120.dp)
+                .height(160.dp)
                 .align(Alignment.BottomCenter)
                 .background(
                     Brush.verticalGradient(

@@ -21,7 +21,7 @@ class ArtistDetailViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<ArtistDetailUiState>(ArtistDetailUiState.Loading)
     val uiState = _uiState.asStateFlow()
 
-    private val artistId: Int = savedStateHandle.toRoute<ArtistDetail>().idArtist
+    private val artistId: Int = savedStateHandle.toRoute<ArtistDetail>().artistId
 
     init {
         loadArtistDetail()

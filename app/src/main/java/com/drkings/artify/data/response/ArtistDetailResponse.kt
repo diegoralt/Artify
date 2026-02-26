@@ -9,22 +9,15 @@ data class ArtistDetailResponse(
     val name: String,
     val profile: String,
     val images: List<ImageResponse>,
-    val members: List<MemberResponse>
-)
-
-@Serializable
-data class ImageResponse(
-    val type: String,
-    @SerialName("resource_url")
-    val resourceUrl: String,
+    val members: List<MemberResponse>? = null
 )
 
 @Serializable
 data class MemberResponse(
     val id: Int,
     val name: String,
-    val active: Boolean,
-    @SerialName("thumbnail_url") val thumbnailUrl: String?
+    @SerialName("resource_url")
+    val resourceUrl: String
 )
 
 
