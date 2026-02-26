@@ -17,7 +17,7 @@ fun NavigationWrapper() {
             })
         }
         composable<ArtistDetail> {
-            ArtistDetailScreen(onBackClick = { navController.popBackStack() }, onDiscographyClick = { idArtist ->
+            ArtistDetailScreen(navigateToBack = { navController.popBackStack() }, navigateToAlbums = { idArtist ->
                 //navController.navigate(ArtistDetail(idArtist))
             })
         }

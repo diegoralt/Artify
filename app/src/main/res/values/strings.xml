@@ -19,4 +19,8 @@
 
     <!-- Common -->
     <string name="common_back_button_content_desc">Back button"</string>
+
+    <!-- Error -->
+    <string name="error_message">We couldn’t load this content right now.\nCheck your connection and try again.</string>
+    <string name="error_retry_button">Try Again</string>
 </resources>

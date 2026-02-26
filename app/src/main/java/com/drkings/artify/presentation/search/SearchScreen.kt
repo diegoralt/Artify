@@ -26,9 +26,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Warning
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -48,7 +45,6 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
@@ -57,6 +53,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.drkings.artify.R
 import com.drkings.artify.domain.entity.ArtistEntity
+import com.drkings.artify.presentation.core.ErrorContent
 import com.drkings.artify.ui.theme.Green40
 import com.drkings.artify.ui.theme.Green60
 import com.drkings.artify.ui.theme.Neutral15
@@ -113,8 +110,7 @@ fun SearchScreen(
                     is SearchUiState.Empty -> EmptyStateContent(state.isBeforeQuery)
                     is SearchUiState.Loading -> LoadingContent()
                     is SearchUiState.Error -> ErrorContent(
-                        message = state.message,
-                        onRetry = { }//viewModel::retry
+                        onRetry = searchViewModel::retry
                     )
 
                     is SearchUiState.Success -> SearchResultsList(
@@ -243,38 +239,6 @@ private fun EmptyStateContent(isBeforeQuery: Boolean) {
 private fun LoadingContent() {
     Column(modifier = Modifier.fillMaxWidth()) {
         repeat(3) { SkeletonItem() }
-    }
-}
-
-@Composable
-private fun ErrorContent(message: String, onRetry: () -> Unit) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Icon(
-            imageVector = Icons.Default.Warning,
-            contentDescription = null,
-            tint = NeutralVariant40,
-            modifier = Modifier.size(48.dp)
-        )
-        Spacer(Modifier.height(16.dp))
-        Text(text = message, color = NeutralVariant60, fontSize = 14.sp)
-        Spacer(Modifier.height(20.dp))
-        Button(
-            onClick = onRetry,
-            colors = ButtonDefaults.buttonColors(containerColor = Green60),
-            shape = RoundedCornerShape(12.dp)
-        ) {
-            Text(
-                text = stringResource(R.string.search_screen_error_retry),
-                color = Neutral6,
-                fontWeight = FontWeight.SemiBold
-            )
-        }
     }
 }
 

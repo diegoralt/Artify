@@ -27,7 +27,11 @@ class ArtistDetailViewModel @Inject constructor(
         loadArtistDetail()
     }
 
-    fun loadArtistDetail() {
+    fun retry() {
+        loadArtistDetail()
+    }
+
+    private fun loadArtistDetail() {
         viewModelScope.launch {
             _uiState.value = ArtistDetailUiState.Loading
 
@@ -35,10 +39,8 @@ class ArtistDetailViewModel @Inject constructor(
                 .onSuccess { artist ->
                     _uiState.value = ArtistDetailUiState.Success(artist)
                 }
-                .onFailure { error ->
-                    _uiState.value = ArtistDetailUiState.Error(
-                        message = error.message ?: "Unable to load artist details"
-                    )
+                .onFailure {
+                    _uiState.value = ArtistDetailUiState.Error
                 }
         }
     }
@@ -46,6 +48,6 @@ class ArtistDetailViewModel @Inject constructor(
 
 sealed interface ArtistDetailUiState {
     object Loading : ArtistDetailUiState
-    data class Error(val message: String) : ArtistDetailUiState
+    object Error : ArtistDetailUiState
     data class Success(val artist: ArtistDetailEntity) : ArtistDetailUiState
 }

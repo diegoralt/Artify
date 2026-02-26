@@ -25,18 +25,18 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.SegmentedButtonDefaults.Icon
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -70,7 +70,7 @@ import coil3.size.Size
 import com.drkings.artify.R
 import com.drkings.artify.domain.entity.ArtistDetailEntity
 import com.drkings.artify.domain.entity.MemberEntity
-import com.drkings.artify.ui.theme.Green40
+import com.drkings.artify.presentation.core.ErrorContent
 import com.drkings.artify.ui.theme.Green60
 import com.drkings.artify.ui.theme.Neutral15
 import com.drkings.artify.ui.theme.Neutral6
@@ -78,35 +78,67 @@ import com.drkings.artify.ui.theme.NeutralVariant20
 import com.drkings.artify.ui.theme.NeutralVariant40
 import com.drkings.artify.ui.theme.NeutralVariant60
 import com.drkings.artify.ui.theme.NeutralVariant90
-import kotlin.collections.emptyList
 
 private const val BIO_COLLAPSED_LINES = 4
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ArtistDetailScreen(
-    viewModel: ArtistDetailViewModel = hiltViewModel(),
-    onBackClick: () -> Unit,
-    onDiscographyClick: (artistId: Int) -> Unit
+    artistDetailViewModel: ArtistDetailViewModel = hiltViewModel(),
+    navigateToBack: () -> Unit,
+    navigateToAlbums: (artistId: Int) -> Unit
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val uiState by artistDetailViewModel.uiState.collectAsStateWithLifecycle()
 
-    when (val state = uiState) {
-        is ArtistDetailUiState.Loading -> ArtistDetailLoadingContent(onBackClick)
-        is ArtistDetailUiState.Error -> ArtistDetailErrorContent(state.message, onBackClick)
-        is ArtistDetailUiState.Success -> ArtistDetailContent(
-            artist = state.artist,
-            onBackClick = onBackClick,
-            onDiscographyClick = { onDiscographyClick(state.artist.id) }
-        )
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {},
+                navigationIcon = {
+                    IconButton(
+                        onClick = navigateToBack,
+                        modifier = Modifier
+                            .statusBarsPadding()
+                            .padding(start = 8.dp, top = 4.dp)
+                            .size(40.dp)
+                            .clip(CircleShape)
+                            .background(Neutral6.copy(alpha = 0.6f))
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.common_back_button_content_desc),
+                            tint = NeutralVariant90
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Neutral6)
+            )
+        }
+    ) { padding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .background(Neutral6)
+        ) {
+            when (val state = uiState) {
+                is ArtistDetailUiState.Loading -> ArtistDetailLoadingContent()
+                is ArtistDetailUiState.Error -> ErrorContent(
+                    artistDetailViewModel::retry
+                )
+
+                is ArtistDetailUiState.Success -> ArtistDetailContent(
+                    artist = state.artist,
+                    onDiscographyClick = { navigateToAlbums(state.artist.id) }
+                )
+            }
+        }
     }
 }
-
-// ── Contenido principal ───────────────────────────────────────────────────────
 
 @Composable
 private fun ArtistDetailContent(
     artist: ArtistDetailEntity,
-    onBackClick: () -> Unit,
     onDiscographyClick: () -> Unit
 ) {
     val scrollState = rememberScrollState()
@@ -124,14 +156,11 @@ private fun ArtistDetailContent(
                 .verticalScroll(scrollState)
         ) {
 
-            // ── Hero Image ────────────────────────────────────────────────────
             HeroImageSection(
                 imageUrl = heroImageUrl,
-                artistName = artist.name,
-                onBackClick = onBackClick
+                artistName = artist.name
             )
 
-            // ── Contenido con padding ─────────────────────────────────────────
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -139,34 +168,26 @@ private fun ArtistDetailContent(
                     .padding(bottom = 32.dp),
                 verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
-
-                // ── Nombre del artista ────────────────────────────────────────
                 ArtistNameSection(name = artist.name)
 
-                // ── Biografía ─────────────────────────────────────────────────
                 if (artist.profile.isNotBlank()) {
                     BiographySection(profile = artist.profile)
                 }
 
-                // ── Miembros ──────────────────────────────────────────────────
                 if (artist.members.isNotEmpty()) {
                     MembersSection(members = artist.members)
                 }
 
-                // ── Botón discografía ─────────────────────────────────────────
                 DiscographyButton(onClick = onDiscographyClick)
             }
         }
     }
 }
 
-// ── Hero Image ────────────────────────────────────────────────────────────────
-
 @Composable
 private fun HeroImageSection(
     imageUrl: String?,
-    artistName: String,
-    onBackClick: () -> Unit
+    artistName: String
 ) {
     val context = LocalContext.current
 
@@ -225,27 +246,8 @@ private fun HeroImageSection(
                     )
                 )
         )
-
-        // Botón back superpuesto sobre la imagen
-        IconButton(
-            onClick = onBackClick,
-            modifier = Modifier
-                .statusBarsPadding()
-                .padding(start = 8.dp, top = 4.dp)
-                .size(40.dp)
-                .clip(CircleShape)
-                .background(Neutral6.copy(alpha = 0.6f))
-        ) {
-            Icon(
-                imageVector = Icons.Default.ArrowBack,
-                contentDescription = stringResource(R.string.common_back_button_content_desc),
-                tint = NeutralVariant90
-            )
-        }
     }
 }
-
-// ── Nombre del artista ────────────────────────────────────────────────────────
 
 @Composable
 private fun ArtistNameSection(name: String) {
@@ -259,8 +261,6 @@ private fun ArtistNameSection(name: String) {
     )
 }
 
-// ── Sección de Biografía ──────────────────────────────────────────────────────
-
 @Composable
 private fun BiographySection(profile: String) {
     var expanded by remember { mutableStateOf(false) }
@@ -268,8 +268,8 @@ private fun BiographySection(profile: String) {
     // Limpia etiquetas BBCode de Discogs ([b], [u], \r\n, etc.)
     val cleanProfile = remember(profile) {
         profile
-            .replace(Regex("\\[/?[biu]\\]"), "")
-            .replace(Regex("\\[/?[a-z]+\\]"), "")
+            .replace(Regex("\\[/?[biu]]"), "")
+            .replace(Regex("\\[/?[a-z]+]"), "")
             .replace("\\r\\n", "\n")
             .replace("\\n", "\n")
             .trim()
@@ -334,8 +334,6 @@ private fun BiographySection(profile: String) {
         }
     }
 }
-
-// ── Sección de Miembros ───────────────────────────────────────────────────────
 
 @Composable
 private fun MembersSection(members: List<MemberEntity>) {
@@ -419,8 +417,6 @@ private fun MemberItem(member: MemberEntity) {
     }
 }
 
-// ── Botón Discografía ─────────────────────────────────────────────────────────
-
 @Composable
 private fun DiscographyButton(onClick: () -> Unit) {
     Button(
@@ -442,7 +438,7 @@ private fun DiscographyButton(onClick: () -> Unit) {
                 color = Neutral6
             )
             Icon(
-                imageVector = Icons.Default.ArrowForward,
+                imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                 contentDescription = null,
                 tint = Neutral6,
                 modifier = Modifier.size(18.dp)
@@ -451,10 +447,8 @@ private fun DiscographyButton(onClick: () -> Unit) {
     }
 }
 
-// ── Loading ───────────────────────────────────────────────────────────────────
-
 @Composable
-private fun ArtistDetailLoadingContent(onBackClick: () -> Unit) {
+private fun ArtistDetailLoadingContent() {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -464,36 +458,6 @@ private fun ArtistDetailLoadingContent(onBackClick: () -> Unit) {
         CircularProgressIndicator(color = Green60)
     }
 }
-
-// ── Error ─────────────────────────────────────────────────────────────────────
-
-@Composable
-private fun ArtistDetailErrorContent(message: String, onBackClick: () -> Unit) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Neutral6),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            modifier = Modifier.padding(24.dp)
-        ) {
-            Text(text = message, color = NeutralVariant60, fontSize = 14.sp)
-            OutlinedButton(
-                onClick = onBackClick,
-                shape = RoundedCornerShape(12.dp),
-                colors = ButtonDefaults.outlinedButtonColors(contentColor = Green60),
-                border = androidx.compose.foundation.BorderStroke(1.dp, Green40)
-            ) {
-                Text(stringResource(R.string.common_back_button_content_desc))
-            }
-        }
-    }
-}
-
-// ── Componente reutilizable ───────────────────────────────────────────────────
 
 @Composable
 private fun SectionLabel(text: String) {
@@ -505,8 +469,6 @@ private fun SectionLabel(text: String) {
         letterSpacing = 1.5.sp
     )
 }
-
-// ── Preview ───────────────────────────────────────────────────────────────────
 
 @Preview(showBackground = true, backgroundColor = 0xFF060E0B)
 @Composable
@@ -525,7 +487,6 @@ private fun ArtistDetailContentPreview() {
                 MemberEntity(530749, "Phil Harvey", imageUrl = "")
             )
         ),
-        onBackClick = {},
         onDiscographyClick = {}
     )
 }
