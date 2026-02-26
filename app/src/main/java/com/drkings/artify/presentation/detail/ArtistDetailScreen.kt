@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -116,13 +117,15 @@ fun ArtistDetailScreen(
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Neutral6)
             )
-        }
+        },
+        modifier = Modifier.fillMaxSize(),
+        containerColor = Neutral6,
+        contentColor = NeutralVariant90
     ) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .background(Neutral6)
         ) {
             when (val state = uiState) {
                 is ArtistDetailUiState.Loading -> ArtistDetailLoadingContent()
@@ -224,7 +227,7 @@ private fun HeroImageSection(
                 }
         )
 
-        if (imageUrl != null) {
+        if (imageUrl?.isNotBlank() == true) {
             AsyncImage(
                 model = imageRequest,
                 contentDescription = stringResource(
@@ -239,6 +242,44 @@ private fun HeroImageSection(
                     .wrapContentHeight(align = Alignment.Top, unbounded = true)
 
             )
+        } else {
+            // Placeholder cuando no hay imagen disponible
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(bottom = 48.dp),  // deja espacio al degradado inferior
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                // Ícono de artista en círculo con borde sutil
+                Box(
+                    modifier = Modifier
+                        .size(88.dp)
+                        .clip(CircleShape)
+                        .background(Neutral15)
+                        .border(1.5.dp, NeutralVariant20, CircleShape),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Person,
+                        contentDescription = null,
+                        tint = NeutralVariant40,
+                        modifier = Modifier.size(44.dp)
+                    )
+                }
+
+                Spacer(Modifier.height(12.dp))
+
+                // Inicial del artista como referencia visual
+                Text(
+                    text = artistName,
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = NeutralVariant60,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
         }
 
         Box(
@@ -387,10 +428,8 @@ private fun MemberItem(member: MemberEntity) {
                 .clip(CircleShape)
                 // Fondo siempre presente como placeholder
                 .background(Neutral15)
-                .then(
-                    Modifier.border(1.dp, NeutralVariant20, CircleShape)
-                ),
-            contentAlignment = Alignment.TopCenter
+                .border(1.dp, NeutralVariant20, CircleShape),
+            contentAlignment = Alignment.Center
         ) {
             if (member.imageUrl.isNotBlank()) {
                 AsyncImage(

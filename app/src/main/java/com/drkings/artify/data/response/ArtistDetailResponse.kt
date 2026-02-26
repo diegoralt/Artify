@@ -8,7 +8,7 @@ data class ArtistDetailResponse(
     val id: Int,
     val name: String,
     val profile: String,
-    val images: List<ImageResponse>,
+    val images: List<ImageResponse>? = null,
     val members: List<MemberResponse>? = null
 )
 
