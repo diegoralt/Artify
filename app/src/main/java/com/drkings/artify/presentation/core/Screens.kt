@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 object Search
 
 @Serializable
-data class ArtistDetail(val idArtist: Int)
+data class ArtistDetail(val artistId: Int)
 
 @Serializable
-object AlbumsDetails
+data class AlbumsDetail(val artistId: Int)

@@ -13,10 +13,10 @@ class ArtistReleasesResponse(
 data class ReleaseResponse(
     val id: Int,
     val title: String,
-    val artist: String?,
-    val year: Int?,
-    val thumb: String?,
-    val format: String?,
-    val label: String?,
-    val status: String?
+    val artist: String? = null,
+    val year: Int? = null,
+    val thumb: String? = null,
+    val format: String? = null,
+    val label: String? = null,
+    val status: String? = null
 )

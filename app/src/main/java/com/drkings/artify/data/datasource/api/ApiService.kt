@@ -26,8 +26,8 @@ interface ApiService {
     @GET("artists/{id}/releases")
     suspend fun getArtistReleases(
         @Path("id") id: Int,
-        @Query("per_page") perPage: Int,
         @Query("page") page: Int,
+        @Query("per_page") perPage: Int,
         @Query("sort") sort: String = "year",
         @Query("sort_order") sortOrder: String = "desc"
     ): ArtistReleasesResponse
