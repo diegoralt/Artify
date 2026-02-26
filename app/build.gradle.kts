@@ -51,6 +51,11 @@ android {
         compose = true
         buildConfig = true
     }
+    testOptions {
+        unitTests.all {
+            it.jvmArgs("-ea")
+        }
+    }
 }
 
 kotlin {
@@ -88,6 +93,8 @@ dependencies {
     implementation(libs.retrofit.adapter)
 
     testImplementation(libs.junit)
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
