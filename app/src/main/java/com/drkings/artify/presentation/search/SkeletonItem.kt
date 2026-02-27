@@ -98,17 +98,15 @@ private fun rememberShimmerBrush(): Brush {
 }
 
 // Reutiliza la misma extension de ArtistResultItem — mover a Modifier.kt si el proyecto crece
-private fun Modifier.drawBottomBorder(color: Color): Modifier = this.then(
-    drawWithContent {
-        drawContent()
-        drawLine(
-            color = color,
-            start = Offset(0f, size.height),
-            end = Offset(size.width, size.height),
-            strokeWidth = 1.dp.toPx()
-        )
-    }
-)
+private fun Modifier.drawBottomBorder(color: Color): Modifier = this.drawWithContent {
+    drawContent()
+    drawLine(
+        color = color,
+        start = Offset(0f, size.height),
+        end = Offset(size.width, size.height),
+        strokeWidth = 1.dp.toPx()
+    )
+}
 
 @Preview(showBackground = true, backgroundColor = 0xFF060E0B)
 @Composable

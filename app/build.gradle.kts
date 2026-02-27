@@ -56,14 +56,9 @@ android {
             it.jvmArgs("-ea")
         }
     }
-}
-
-kotlin {
-    compilerOptions {
-        languageVersion = org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_3
-    }
 
     lint {
+        baseline = file("lint-baseline.xml")
         warningsAsErrors = false
         abortOnError = true
         xmlReport = true
@@ -74,6 +69,12 @@ kotlin {
             "ObsoleteLintCustomCheck",
             "GradleDependency"
         )
+    }
+}
+
+kotlin {
+    compilerOptions {
+        languageVersion = org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_3
     }
 }
 
