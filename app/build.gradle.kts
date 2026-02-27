@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
+    alias(libs.plugins.detekt)
 }
 
 // Carga local.properties desde la raíz del proyecto
@@ -56,12 +57,33 @@ android {
             it.jvmArgs("-ea")
         }
     }
+
+    lint {
+        baseline = file("lint-baseline.xml")
+        warningsAsErrors = false
+        abortOnError = true
+        xmlReport = true
+        htmlReport = true
+        xmlOutput = file("build/reports/lint/lint-results.xml")
+        htmlOutput = file("build/reports/lint/lint-results.html")
+        disable += setOf(
+            "ObsoleteLintCustomCheck",
+            "GradleDependency"
+        )
+    }
 }
 
 kotlin {
     compilerOptions {
         languageVersion = org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_3
     }
+}
+
+detekt {
+    baseline = file("detekt-baseline.xml")
+    config.setFrom(files("${rootProject.projectDir}/config/detekt/detekt.yml"))
+    buildUponDefaultConfig = true
+    autoCorrect = false
 }
 
 dependencies {
@@ -91,6 +113,9 @@ dependencies {
     // Retrofit
     implementation(libs.retrofit)
     implementation(libs.retrofit.adapter)
+
+    // Static code analyzer
+    detektPlugins(libs.detekt.formatting)
 
     testImplementation(libs.junit)
     testImplementation(libs.mockk)

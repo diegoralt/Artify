@@ -19,6 +19,3 @@ data class MemberResponse(
     @SerialName("resource_url")
     val resourceUrl: String
 )
-
-
-

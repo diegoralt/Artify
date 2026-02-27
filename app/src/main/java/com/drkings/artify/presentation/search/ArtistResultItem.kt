@@ -98,7 +98,8 @@ fun ArtistResultItem(
 private fun ArtistAvatar(artist: ArtistEntity) {
     val avatarGradient = Brush.linearGradient(
         colors = listOf(Color(0xFF1a3a2a), Color(0xFF2a5a3a)),
-        start = Offset(0f, 0f), end = Offset(52f, 52f)
+        start = Offset(0f, 0f),
+        end = Offset(52f, 52f)
     )
 
     val context = LocalContext.current
@@ -148,7 +149,8 @@ private fun ArtistTypeChip(type: String) {
     val (bg, textColor, label) = Triple(
         Green60.copy(alpha = 0.12f),
         Green60,
-        type.replaceFirstChar { it.uppercase() })
+        type.replaceFirstChar { it.uppercase() }
+    )
     Box(
         modifier = Modifier
             .height(20.dp)
@@ -188,7 +190,7 @@ private fun ArtistResultItemSoloPreview() {
             id = 29735,
             name = "Coldplay",
             type = "artist",
-            thumbUrl = "https://i.discogs.com/V90awgfHX4AGcdXYb6M4w8Sl-zzxrK0nsMET0pUXMTw/rs:fit/g:sm/q:40/h:150/w:150/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9BLTI5NzM1/LTE3MjAwNjU1MTEt/NzM3Mi5qcGVn.jpeg"
+            thumbUrl = "https://i.discogs.com/coldplay.jpeg"
         ),
         onClick = {}
     )

@@ -1,0 +1,126 @@
+# config/detekt/detekt.yml
+build:
+  maxIssues: 10  # Bajar a 0 una vez que el código esté limpio
+
+config:
+  validation: true
+  warningsAsErrors: false
+
+formatting:
+  active: true
+  android: true
+  autoCorrect: true
+  MaxLineLength:
+    active: true
+    maxLineLength: 120
+  NoWildcardImports:
+    active: true
+  TrailingCommaOnCallSite:
+    active: false
+  TrailingCommaOnDeclarationSite:
+    active: false
+
+style:
+  active: true
+  MagicNumber:
+    active: true
+    ignoreNumbers: ['-1', '0', '1', '2']
+    ignorePropertyDeclaration: true
+    ignoreCompanionObjectPropertyDeclaration: true
+  MaxLineLength:
+    active: true
+    maxLineLength: 120
+  ReturnCount:
+    active: true
+    max: 3
+  UnusedPrivateMember:
+    active: false
+  UnusedImports:
+    active: true
+  ForbiddenComment:
+    active: true
+    comments:
+      - reason: "Resolver antes de mergear"
+        value: "TODO:"
+      - reason: "Resolver antes de mergear"
+        value: "FIXME:"
+      - reason: "No usar en producción"
+        value: "HACK:"
+  UseCheckOrError:
+    active: true
+  UseRequire:
+    active: true
+  OptionalAbstractKeyword:
+    active: true
+  UnnecessaryAbstractClass:
+    active: true
+
+complexity:
+  active: true
+  CyclomaticComplexMethod:
+    active: true
+    threshold: 15
+  CognitiveComplexMethod:
+    active: true
+    threshold: 20
+  LongMethod:
+    active: true
+    threshold: 120
+  LongParameterList:
+    active: true
+    functionThreshold: 6
+  TooManyFunctions:
+    active: true
+    thresholdInFiles: 15
+    thresholdInClasses: 15
+  NestedBlockDepth:
+    active: true
+    threshold: 4
+
+naming:
+  active: true
+  FunctionNaming:
+    active: true
+    functionPattern: '[a-z][a-zA-Z0-9]*'
+    ignoreAnnotated: ['Composable']
+  ClassNaming:
+    active: true
+    classPattern: '[A-Z][a-zA-Z0-9]*'
+  PackageNaming:
+    active: true
+    packagePattern: '[a-z]+(\.[a-z][a-z0-9]*)*'
+  TopLevelPropertyNaming:
+    active: true
+    constantPattern: '[A-Z][_A-Z0-9]*'
+
+coroutines:
+  active: true
+  GlobalCoroutineUsage:
+    active: true
+  RedundantSuspendModifier:
+    active: true
+  SuspendFunWithFlowReturnType:
+    active: true
+
+exceptions:
+  active: true
+  TooGenericExceptionCaught:
+    active: true
+    exceptionNames:
+      - Exception
+      - Throwable
+  TooGenericExceptionThrown:
+    active: true
+    exceptionNames:
+      - Exception
+      - Throwable
+      - RuntimeException
+  SwallowedException:
+    active: true
+
+performance:
+  active: true
+  SpreadOperator:
+    active: true
+  UnnecessaryTemporaryInstantiation:
+    active: true

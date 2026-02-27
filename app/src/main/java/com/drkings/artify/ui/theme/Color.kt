@@ -13,8 +13,8 @@ val Green20 = Color(0xFF003D2D)
 val Neutral20 = Color(0xFF243830)
 val Neutral15 = Color(0xFF1C2E24)
 val Neutral10 = Color(0xFF142119)
-val Neutral8  = Color(0xFF0D1A15)
-val Neutral6  = Color(0xFF060E0B)
+val Neutral8 = Color(0xFF0D1A15)
+val Neutral6 = Color(0xFF060E0B)
 
 // Neutral Variant Text / Outline)
 val NeutralVariant90 = Color(0xFFE8F5F0)
@@ -24,8 +24,8 @@ val NeutralVariant20 = Color(0xFF1E3028)
 
 // Semantic
 val Yellow80 = Color(0xFFFFD166)
-val Red80    = Color(0xFFFF6B6B)
-val Blue80   = Color(0xFF4FC3F7)
+val Red80 = Color(0xFFFF6B6B)
+val Blue80 = Color(0xFF4FC3F7)
 
 val Purple80 = Color(0xFFD0BCFF)
 val PurpleGrey80 = Color(0xFFCCC2DC)

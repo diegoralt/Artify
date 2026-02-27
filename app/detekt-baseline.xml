@@ -1,0 +1,53 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues></ManuallySuppressedIssues>
+  <CurrentIssues>
+    <ID>CognitiveComplexMethod:AlbumsDetailScreen.kt$@Composable private fun SortPickerSheet( current: SortOrder, onSelect: (SortOrder) -&gt; Unit )</ID>
+    <ID>CognitiveComplexMethod:AlbumsDetailScreen.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable private fun AlbumsSuccessContent( state: AlbumsUiState.Success, onLoadMore: () -&gt; Unit, onToggleYear: (Int) -&gt; Unit, onToggleGenre: (String) -&gt; Unit, onToggleLabel: (String) -&gt; Unit, onClearFilters: () -&gt; Unit, onSortChange: (SortOrder) -&gt; Unit )</ID>
+    <ID>CognitiveComplexMethod:ArtistDetailScreen.kt$@Composable private fun BiographySection(profile: String)</ID>
+    <ID>CyclomaticComplexMethod:AlbumsDetailScreen.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable private fun AlbumsSuccessContent( state: AlbumsUiState.Success, onLoadMore: () -&gt; Unit, onToggleYear: (Int) -&gt; Unit, onToggleGenre: (String) -&gt; Unit, onToggleLabel: (String) -&gt; Unit, onClearFilters: () -&gt; Unit, onSortChange: (SortOrder) -&gt; Unit )</ID>
+    <ID>LongParameterList:AlbumsDetailScreen.kt$( state: AlbumsUiState.Success, onLoadMore: () -&gt; Unit, onToggleYear: (Int) -&gt; Unit, onToggleGenre: (String) -&gt; Unit, onToggleLabel: (String) -&gt; Unit, onClearFilters: () -&gt; Unit, onSortChange: (SortOrder) -&gt; Unit )</ID>
+    <ID>MagicNumber:AlbumsDetailScreen.kt$0.28f</ID>
+    <ID>MagicNumber:AlbumsDetailScreen.kt$0.4f</ID>
+    <ID>MagicNumber:AlbumsDetailScreen.kt$0.58f</ID>
+    <ID>MagicNumber:AlbumsDetailScreen.kt$0.9f</ID>
+    <ID>MagicNumber:AlbumsDetailScreen.kt$10</ID>
+    <ID>MagicNumber:AlbumsDetailScreen.kt$120</ID>
+    <ID>MagicNumber:AlbumsDetailScreen.kt$200</ID>
+    <ID>MagicNumber:AlbumsDetailScreen.kt$2008</ID>
+    <ID>MagicNumber:AlbumsDetailScreen.kt$2011</ID>
+    <ID>MagicNumber:AlbumsDetailScreen.kt$2014</ID>
+    <ID>MagicNumber:AlbumsDetailScreen.kt$2015</ID>
+    <ID>MagicNumber:AlbumsDetailScreen.kt$3</ID>
+    <ID>MagicNumber:AlbumsDetailScreen.kt$4</ID>
+    <ID>MagicNumber:AlbumsDetailScreen.kt$400f</ID>
+    <ID>MagicNumber:AlbumsDetailScreen.kt$5</ID>
+    <ID>MagicNumber:AlbumsDetailScreen.kt$50</ID>
+    <ID>MagicNumber:ArtistDetailScreen.kt$0xFF0D2019</ID>
+    <ID>MagicNumber:ArtistDetailScreen.kt$0xFF1A3A28</ID>
+    <ID>MagicNumber:ArtistDetailScreen.kt$128</ID>
+    <ID>MagicNumber:ArtistDetailScreen.kt$200</ID>
+    <ID>MagicNumber:ArtistDetailScreen.kt$300</ID>
+    <ID>MagicNumber:ArtistDetailScreen.kt$42610</ID>
+    <ID>MagicNumber:ArtistDetailScreen.kt$530745</ID>
+    <ID>MagicNumber:ArtistDetailScreen.kt$530746</ID>
+    <ID>MagicNumber:ArtistDetailScreen.kt$530747</ID>
+    <ID>MagicNumber:ArtistDetailScreen.kt$530749</ID>
+    <ID>MagicNumber:ArtistResultItem.kt$0.4f</ID>
+    <ID>MagicNumber:ArtistResultItem.kt$0xFF1a3a2a</ID>
+    <ID>MagicNumber:ArtistResultItem.kt$0xFF2a5a3a</ID>
+    <ID>MagicNumber:ArtistResultItem.kt$200</ID>
+    <ID>MagicNumber:ArtistResultItem.kt$52f</ID>
+    <ID>MagicNumber:SearchScreen.kt$3</ID>
+    <ID>MagicNumber:SkeletonItem.kt$0.42f</ID>
+    <ID>MagicNumber:SkeletonItem.kt$0.60f</ID>
+    <ID>MagicNumber:SkeletonItem.kt$3</ID>
+    <ID>MagicNumber:SkeletonItem.kt$300f</ID>
+    <ID>MagicNumber:SplashScreen.kt$0.6f</ID>
+    <ID>MagicNumber:SplashScreen.kt$1000L</ID>
+    <ID>TooGenericExceptionCaught:ArtistDetailRepositoryImpl.kt$ArtistDetailRepositoryImpl$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:ArtistReleasesRepositoryImpl.kt$ArtistReleasesRepositoryImpl$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:SearchRepositoryImpl.kt$SearchRepositoryImpl$e: Exception</ID>
+    <ID>TooManyFunctions:AlbumsDetailScreen.kt$com.drkings.artify.presentation.detail.AlbumsDetailScreen.kt</ID>
+  </CurrentIssues>
+</SmellBaseline>

@@ -30,7 +30,6 @@ class SearchRepositoryImplTest {
 
     @Test
     fun `search - returns empty list when no results are found`() = runTest {
-
         // Given
         val query = "nonexistent"
 
@@ -55,7 +54,6 @@ class SearchRepositoryImplTest {
 
     @Test
     fun `search - returns artist information when results are found`() = runTest {
-
         // Given
         val query = "Coldpl"
 
@@ -93,7 +91,6 @@ class SearchRepositoryImplTest {
 
     @Test
     fun `search - returns all artist size when results are different artist`() = runTest {
-
         // Given
         val query = "Coldpl"
 

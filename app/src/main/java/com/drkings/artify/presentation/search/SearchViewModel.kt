@@ -37,8 +37,8 @@ class SearchViewModel @Inject constructor(private val searchUseCase: SearchUseCa
         viewModelScope.launch {
             _query
                 .debounce(DEBOUNCE_MS)
-                .filter { it.isNotBlank() }       // ignora queries vacíos
-                .distinctUntilChanged()            // ignora el mismo valor repetido
+                .filter { it.isNotBlank() } // ignora queries vacíos
+                .distinctUntilChanged() // ignora el mismo valor repetido
                 .collectLatest { query ->
                     val current = _uiState.value
                     if (current is SearchUiState.Success && current.isLoadingNextPage) {
@@ -133,8 +133,8 @@ class SearchViewModel @Inject constructor(private val searchUseCase: SearchUseCa
     }
 
     private companion object {
-        const val DEBOUNCE_MS = 400L  // ms de espera antes de disparar búsqueda
-        const val PAGE_SIZE = 30    // resultados por página
+        const val DEBOUNCE_MS = 400L // ms de espera antes de disparar búsqueda
+        const val PAGE_SIZE = 30 // resultados por página
         const val FIRST_PAGE = 1
     }
 }

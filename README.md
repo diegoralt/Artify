@@ -84,3 +84,36 @@ The UI is built with **Jetpack Compose**, Google's modern tool for creating scre
 
 ### Hilt
 It takes care of creating and sharing the components the app needs — like the network client — so each screen does not have to do it on its own. It is Google's official solution for Android and helps avoid repetitive code.
+
+---
+
+## Static code analyzer
+The project uses two tools to keep the code quality consistent: **Lint** and **Detekt**. Both run automatically on every Pull Request through GitHub Actions.
+
+---
+
+### Lint
+
+This is Android's official tool. It finds problems related to incorrect API usage, unused resources, and possible runtime errors.
+
+**Run:**
+```bash
+./gradlew lint
+```
+
+**Result:** a report is generated at `app/build/reports/lint-results-debug.html`. Each issue shows the file, the line, and a description of the problem. Issues marked as **Error** will fail the build; issues marked as **Warning** are just informational.
+
+### Detekt
+
+A static analysis tool made specifically for Kotlin. It detects code that is too complex, badly named, has too many responsibilities, or does not follow good practices.
+
+The project configuration is located at `config/detekt/detekt.yml` and includes rules for style, complexity, naming, coroutines, and exception handling.
+
+**Run:**
+```bash
+./gradlew detekt
+```
+
+**Result:** a report is generated at `app/build/reports/detekt/detekt.html`. Each issue shows the rule that was broken, the file, and the line. If the number of issues goes over the `maxIssues` value defined in the configuration, the build will fail.
+
+> ⚠️ To ignore existing issues without blocking the build, the project uses a baseline file (`detekt-baseline.xml`). Only **new** issues will cause an error.

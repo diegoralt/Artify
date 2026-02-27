@@ -228,7 +228,6 @@ private fun AlbumsSuccessContent(
             .background(Neutral6)
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
-
             // ── Filter chip bar — SIEMPRE visible, igual al mockup ────────────
             FilterChipBar(
                 filterState = state.filterState,
@@ -241,7 +240,8 @@ private fun AlbumsSuccessContent(
             // ── Sort indicator ────────────────────────────────────────────────
             SortIndicatorRow(
                 sortOrder = state.sortOrder,
-                onSortClick = { activeSheet = ActiveSheet.SORT })
+                onSortClick = { activeSheet = ActiveSheet.SORT }
+            )
 
             // ── List / empty ──────────────────────────────────────────────────
             if (state.albums.isEmpty()) {
@@ -828,8 +828,11 @@ private fun FilterSheetScaffold(
                     source: NestedScrollSource
                 ): Offset {
                     val atTop = !lazyListState.canScrollBackward
-                    return if (available.y > 0 && atTop) Offset.Zero
-                    else Offset.Zero  // en todos los demás casos, tampoco consumimos (la lista lo maneja)
+                    return if (available.y > 0 && atTop) {
+                        Offset.Zero
+                    } else {
+                        Offset.Zero
+                    } // en todos los demás casos, tampoco consumimos (la lista lo maneja)
                 }
             }
         }

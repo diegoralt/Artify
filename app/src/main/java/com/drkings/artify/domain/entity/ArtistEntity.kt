@@ -6,5 +6,3 @@ data class ArtistEntity(
     val type: String,
     val thumbUrl: String
 )
-
-

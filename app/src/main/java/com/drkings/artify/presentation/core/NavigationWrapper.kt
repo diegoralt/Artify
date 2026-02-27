@@ -32,7 +32,8 @@ fun NavigationWrapper() {
                 navigateToBack = { navController.popBackStack() },
                 navigateToAlbums = { artistId, artistName ->
                     navController.navigate(AlbumsDetail(artistId, artistName))
-                })
+                }
+            )
         }
         composable<AlbumsDetail> {
             AlbumsDetailScreen(navigateToBack = { navController.popBackStack() })

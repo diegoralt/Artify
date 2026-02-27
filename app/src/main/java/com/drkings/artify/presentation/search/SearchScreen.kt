@@ -47,6 +47,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -232,11 +233,17 @@ private fun EmptyStateContent(isBeforeQuery: Boolean) {
         }
         Spacer(Modifier.height(8.dp))
         Text(
-            text = stringResource(if (isBeforeQuery) R.string.search_screen_empty_subtitle else R.string.search_screen_empty_suggestions),
+            text = stringResource(
+                if (isBeforeQuery) {
+                    R.string.search_screen_empty_subtitle
+                } else {
+                    R.string.search_screen_empty_suggestions
+                }
+            ),
             fontSize = 14.sp,
             color = NeutralVariant60,
             lineHeight = 22.sp,
-            textAlign = androidx.compose.ui.text.style.TextAlign.Center
+            textAlign = TextAlign.Center
         )
     }
 }
