@@ -1,3 +1,44 @@
 <resources>
     <string name="app_name">Artify</string>
+
+    <!-- Splash Screen -->
+    <string name="splash_screen_subtitle">FIND THE ARTIST. FEEL THE MUSIC.</string>
+
+    <!-- Search Screen -->
+    <string name="search_screen_hint">Search for an artist…</string>
+    <string name="search_screen_empty_title">Discover your favorite artists</string>
+    <string name="search_screen_empty_subtitle">Search by name to explore discographies, band members and more</string>
+    <string name="search_screen_empty_suggestions">Could not find any search suggestions</string>
+    <string name="search_screen_clear_content_desc">Close icon</string>
+    <string name="search_screen_search_content_desc">Search icon</string>
+
+    <!-- Artist Detail Screen -->
+    <string name="artist_detail_screen_hero_content_desc">%1$s artist image</string>
+    <string name="artist_detail_screen_biography">BIOGRAPHY</string>
+    <string name="artist_detail_screen_bio_more">Read more</string>
+    <string name="artist_detail_screen_bio_less">Read less</string>
+    <string name="artist_detail_screen_members">MEMBERS</string>
+    <string name="artist_detail_screen_discography_button">View Discography</string>
+
+    <!-- Albums Detail Screen -->
+    =<string name="albums_detail_screen_sort_content_desc">Sort albums</string>
+    <string name="albums_detail_screen_sort_title">Sort by</string>
+    <string name="albums_detail_screen_sort_newest">Newest first</string>
+    <string name="albums_detail_screen_sort_oldest">Oldest first</string>
+    <string name="albums_detail_screen_sort_prefix">Sort:</string>
+    <string name="albums_detail_screen_filter_all">All</string>
+    <string name="albums_detail_screen_filter_year">Year</string>
+    <string name="albums_detail_screen_filter_genre">Genre</string>
+    <string name="albums_detail_screen_filter_label">Label</string>
+    <string name="albums_detail_screen_filter_apply">Apply filters</string>
+    <string name="albums_detail_screen_filter_clear_all">Clear all</string>
+    <string name="albums_detail_screen_empty_filtered_title">No albums match your filters</string>
+    <string name="albums_detail_screen_empty_filtered_subtitle">Try removing some filters to see more results.</string>
+
+    <!-- Common -->
+    <string name="common_back_button_content_desc">Back button"</string>
+
+    <!-- Error -->
+    <string name="error_message">We couldn’t load this content right now.\nCheck your connection and try again.</string>
+    <string name="error_retry_button">Try Again</string>
 </resources>
