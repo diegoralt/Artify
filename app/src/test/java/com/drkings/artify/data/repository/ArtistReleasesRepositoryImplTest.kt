@@ -30,7 +30,6 @@ class ArtistReleasesRepositoryImplTest {
     @Test
     fun `getReleases - release has genre detail - call release for each album`() =
         runTest {
-
             // Given
             val artistId = 29735
             val release1 = ReleaseResponse(id = 111, title = "Music of the Spheres", year = 2021)
@@ -67,7 +66,6 @@ class ArtistReleasesRepositoryImplTest {
     @Test
     fun `getReleases - all releases have genre detail - maps genres correctly to each album`() =
         runTest {
-
             // Given
             val artistId = 29735
             val release1 = ReleaseResponse(id = 111, title = "Music of the Spheres", year = 2021)
@@ -106,7 +104,6 @@ class ArtistReleasesRepositoryImplTest {
     @Test
     fun `getReleases - one release detail fails - assigns empty genres without cancelling others`() =
         runTest {
-
             // Given
             val artistId = 29735
             val release1 = ReleaseResponse(id = 111, title = "Music of the Spheres", year = 2021)

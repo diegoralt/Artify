@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
+    alias(libs.plugins.detekt)
 }
 
 // Carga local.properties desde la raíz del proyecto
@@ -78,6 +79,13 @@ kotlin {
     }
 }
 
+detekt {
+    baseline = file("detekt-baseline.xml")
+    config.setFrom(files("${rootProject.projectDir}/config/detekt/detekt.yml"))
+    buildUponDefaultConfig = true
+    autoCorrect = false
+}
+
 dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -105,6 +113,9 @@ dependencies {
     // Retrofit
     implementation(libs.retrofit)
     implementation(libs.retrofit.adapter)
+
+    // Static code analyzer
+    detektPlugins(libs.detekt.formatting)
 
     testImplementation(libs.junit)
     testImplementation(libs.mockk)

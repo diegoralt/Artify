@@ -161,7 +161,6 @@ private fun ArtistDetailContent(
                 .fillMaxSize()
                 .verticalScroll(scrollState)
         ) {
-
             HeroImageSection(
                 imageUrl = heroImageUrl,
                 artistName = artist.name
@@ -247,7 +246,7 @@ private fun HeroImageSection(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(bottom = 48.dp),  // deja espacio al degradado inferior
+                    .padding(bottom = 48.dp), // deja espacio al degradado inferior
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
@@ -361,8 +360,11 @@ private fun BiographySection(profile: String) {
                 ) {
                     Text(
                         text = stringResource(
-                            if (expanded) R.string.artist_detail_screen_bio_less
-                            else R.string.artist_detail_screen_bio_more
+                            if (expanded) {
+                                R.string.artist_detail_screen_bio_less
+                            } else {
+                                R.string.artist_detail_screen_bio_more
+                            }
                         ),
                         fontSize = 12.sp,
                         fontWeight = FontWeight.SemiBold,
@@ -522,8 +524,8 @@ private fun ArtistDetailContentPreview() {
         artist = ArtistDetailEntity(
             id = 29735,
             name = "Coldplay",
-            profile = "Pop rock band from London, England.\r\nFormed 1997.\r\n\r\n[b][u]Line-up:[/u][/b]\r\nJonny Buckland - Guitar/Keys\\Backing vocals (1997-)\r\nWill Champion - Drums/Backing vocals (1998-)\r\nGuy Berryman - Bass/Keys (1997-)\r\nChris Martin - Vocals/Piano\\Acoustic guitar(1997-)\r\nPhil Harvey - Manager/Creative director (1998-2002, 2006-)",
-            image = "https://i.discogs.com/sBor9_gG6g8eU12WLhcoDn_N88zv3F5VXh8i_lkVaW0/rs:fit/g:sm/q:90/h:385/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9BLTI5NzM1/LTE3MjAwNjU1MTEt/NzM3Mi5qcGVn.jpeg",
+            profile = "Pop rock band from London",
+            image = "https://i.discogs.com/coldplay.jpeg",
             members = listOf(
                 MemberEntity(42610, "Chris Martin", imageUrl = ""),
                 MemberEntity(530745, "Guy Berryman", imageUrl = ""),

@@ -1,6 +1,6 @@
 # config/detekt/detekt.yml
 build:
-  maxIssues: 0
+  maxIssues: 10  # Bajar a 0 una vez que el código esté limpio
 
 config:
   validation: true
@@ -16,9 +16,9 @@ formatting:
   NoWildcardImports:
     active: true
   TrailingCommaOnCallSite:
-    active: true
+    active: false
   TrailingCommaOnDeclarationSite:
-    active: true
+    active: false
 
 style:
   active: true
@@ -34,19 +34,38 @@ style:
     active: true
     max: 3
   UnusedPrivateMember:
+    active: false
+  UnusedImports:
     active: true
   ForbiddenComment:
     active: true
-    values: ['FIXME', 'HACK', 'XXX']
+    comments:
+      - reason: "Resolver antes de mergear"
+        value: "TODO:"
+      - reason: "Resolver antes de mergear"
+        value: "FIXME:"
+      - reason: "No usar en producción"
+        value: "HACK:"
+  UseCheckOrError:
+    active: true
+  UseRequire:
+    active: true
+  OptionalAbstractKeyword:
+    active: true
+  UnnecessaryAbstractClass:
+    active: true
 
 complexity:
   active: true
   CyclomaticComplexMethod:
     active: true
     threshold: 15
+  CognitiveComplexMethod:
+    active: true
+    threshold: 20
   LongMethod:
     active: true
-    threshold: 60
+    threshold: 120
   LongParameterList:
     active: true
     functionThreshold: 6
@@ -54,16 +73,25 @@ complexity:
     active: true
     thresholdInFiles: 15
     thresholdInClasses: 15
+  NestedBlockDepth:
+    active: true
+    threshold: 4
 
 naming:
   active: true
   FunctionNaming:
     active: true
     functionPattern: '[a-z][a-zA-Z0-9]*'
-    ignoreAnnotated: ['Composable']  # importante para Compose
+    ignoreAnnotated: ['Composable']
   ClassNaming:
     active: true
     classPattern: '[A-Z][a-zA-Z0-9]*'
+  PackageNaming:
+    active: true
+    packagePattern: '[a-z]+(\.[a-z][a-z0-9]*)*'
+  TopLevelPropertyNaming:
+    active: true
+    constantPattern: '[A-Z][_A-Z0-9]*'
 
 coroutines:
   active: true
@@ -81,5 +109,18 @@ exceptions:
     exceptionNames:
       - Exception
       - Throwable
+  TooGenericExceptionThrown:
+    active: true
+    exceptionNames:
+      - Exception
+      - Throwable
+      - RuntimeException
   SwallowedException:
+    active: true
+
+performance:
+  active: true
+  SpreadOperator:
+    active: true
+  UnnecessaryTemporaryInstantiation:
     active: true

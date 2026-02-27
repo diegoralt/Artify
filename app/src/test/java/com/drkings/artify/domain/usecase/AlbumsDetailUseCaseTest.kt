@@ -30,7 +30,6 @@ class AlbumsDetailUseCaseTest {
     @Test
     fun `invoke - repository returns entity - emits result success with correct albums size`() =
         runTest {
-
             // Given
             val artistId = 29735
 
@@ -81,7 +80,6 @@ class AlbumsDetailUseCaseTest {
     @Test
     fun `invoke - repository returns entity - emits result success with correct genres size`() =
         runTest {
-
             // Given
             val artistId = 29735
 
@@ -118,7 +116,6 @@ class AlbumsDetailUseCaseTest {
     @Test
     fun `invoke - repository throws exception - emits result failure with original message exception`() =
         runTest {
-
             // Given
             val artistId = 29735
             val messageError = "HTTP 429 Too Many Requests"

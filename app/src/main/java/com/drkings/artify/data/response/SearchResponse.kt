@@ -7,4 +7,3 @@ data class SearchResponse(
     val pagination: PaginationResponse,
     val results: List<ArtistResponse>
 )
-

@@ -72,7 +72,8 @@ fun MemberResponse.toDomain(thumbnailUrl: String): MemberEntity {
 fun ArtistReleasesResponse.toDomain(genresByReleaseId: Map<Int, List<String>>): AlbumsDetailEntity {
     return AlbumsDetailEntity(
         pagination = pagination.toDomain(),
-        albums = releases.map { it.toDomain(genresByReleaseId[it.id].orEmpty()) })
+        albums = releases.map { it.toDomain(genresByReleaseId[it.id].orEmpty()) }
+    )
 }
 
 fun ReleaseResponse.toDomain(genres: List<String>): AlbumEntity {

@@ -232,12 +232,12 @@ sealed interface AlbumsUiState {
     object Loading : AlbumsUiState
     data class Error(val message: String) : AlbumsUiState
     data class Success(
-        val albums: List<AlbumEntity>,          // Lista ya filtrada y ordenada
+        val albums: List<AlbumEntity>, // Lista ya filtrada y ordenada
         val isLoadingNextPage: Boolean,
         val filterState: FilterState,
         val sortOrder: SortOrder,
-        val availableYears: List<Int>,          // Opciones para el filtro de año
-        val availableGenres: List<String>,      // Opciones para el filtro de género
-        val availableLabels: List<String>       // Opciones para el filtro de etiqueta
+        val availableYears: List<Int>, // Opciones para el filtro de año
+        val availableGenres: List<String>, // Opciones para el filtro de género
+        val availableLabels: List<String> // Opciones para el filtro de etiqueta
     ) : AlbumsUiState
 }

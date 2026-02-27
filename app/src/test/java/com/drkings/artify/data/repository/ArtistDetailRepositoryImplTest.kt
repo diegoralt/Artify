@@ -26,7 +26,6 @@ class ArtistDetailRepositoryImplTest {
 
     @Test
     fun `getDetail - artist without members - returns entity without member`() = runTest {
-
         // Given
         val artistId = 29735
         val fakeResponse = ArtistDetailResponse(
@@ -55,7 +54,6 @@ class ArtistDetailRepositoryImplTest {
     @Test
     fun `getDetail - artist with different images - returns entity with primary type image`() =
         runTest {
-
             // Given
             val artistId = 29735
             val urlImage = "https://img.discogs.com/chris_martin.jpg"
@@ -86,7 +84,6 @@ class ArtistDetailRepositoryImplTest {
 
     @Test
     fun `getDetail - artist with members - resolves member images in parallel`() = runTest {
-
         // Given
         val bandId = 29735
         val member1Id = 42610
@@ -153,7 +150,6 @@ class ArtistDetailRepositoryImplTest {
 
     @Test
     fun `getDetail - artist with members - resolves member response`() = runTest {
-
         // Given
         val bandId = 29735
         val member1Id = 42610

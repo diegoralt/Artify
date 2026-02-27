@@ -25,7 +25,6 @@ class ArtistDetailUseCaseTest {
 
     @Test
     fun `invoke - repository returns entity - emits result success with correct data`() = runTest {
-
         // Given
         val artistId = 29735
         val fakeArtistDetailEntity = ArtistDetailEntity(
@@ -55,7 +54,6 @@ class ArtistDetailUseCaseTest {
 
     @Test
     fun `invoke - repository returns entity - emits members when artist has members`() = runTest {
-
         // Given
         val artistId = 29735
         val fakeArtistDetailEntity = ArtistDetailEntity(
@@ -83,7 +81,6 @@ class ArtistDetailUseCaseTest {
     @Test
     fun `invoke - repository throws exception - emits result failure with same exception`() =
         runTest {
-
             // Given
             val artistId = 29735
             val errorMessage = "Unable to resolve host"

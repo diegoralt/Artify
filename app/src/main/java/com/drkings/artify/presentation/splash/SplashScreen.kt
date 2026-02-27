@@ -84,7 +84,6 @@ fun SplashScreen(
             .background(Neutral6),
         contentAlignment = Alignment.Center
     ) {
-
         GlowBackground()
 
         Column(

@@ -31,7 +31,6 @@ class SearchUseCaseTest {
     @Test
     fun `invoke - repository returns results - emits result success with correct search entity`() =
         runTest {
-
             // Given
             val fakeSearchEntity = SearchEntity(
                 pagination = PaginationEntity(page = 1, pages = 3, items = 58),
@@ -66,7 +65,6 @@ class SearchUseCaseTest {
     @Test
     fun `invoke - repository returns results - emits artist values with correct search entity`() =
         runTest {
-
             // Given
             val fakeSearchEntity = SearchEntity(
                 pagination = PaginationEntity(page = 1, pages = 3, items = 58),
@@ -98,7 +96,6 @@ class SearchUseCaseTest {
     @Test
     fun `invoke - repository throws exception - emits result failure with original exception`(): Unit =
         runTest {
-
             // Given
             val messageError = "No internet connection"
 
