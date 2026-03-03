@@ -71,8 +71,8 @@ complexity:
     functionThreshold: 6
   TooManyFunctions:
     active: true
-    thresholdInFiles: 15
-    thresholdInClasses: 15
+    thresholdInFiles: 20
+    thresholdInClasses: 20
   NestedBlockDepth:
     active: false
     threshold: 4

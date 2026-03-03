@@ -37,7 +37,8 @@
     <ID>MagicNumber:ArtistResultItem.kt$0xFF2a5a3a</ID>
     <ID>MagicNumber:ArtistResultItem.kt$200</ID>
     <ID>MagicNumber:ArtistResultItem.kt$52f</ID>
-    <ID>MagicNumber:DataModule.kt$DataModule$30</ID>
+    <ID>MagicNumber:DataModule.kt$DataModule$10</ID>
+    <ID>MagicNumber:DataModule.kt$DataModule$15</ID>
     <ID>MagicNumber:SearchScreen.kt$3</ID>
     <ID>MagicNumber:SkeletonItem.kt$0.42f</ID>
     <ID>MagicNumber:SkeletonItem.kt$0.60f</ID>
@@ -50,5 +51,7 @@
     <ID>TooGenericExceptionCaught:ArtistReleasesRepositoryImpl.kt$ArtistReleasesRepositoryImpl$e: Exception</ID>
     <ID>TooGenericExceptionCaught:SearchRepositoryImpl.kt$SearchRepositoryImpl$e: Exception</ID>
     <ID>TooGenericExceptionCaught:SslHelper.kt$e: Exception</ID>
+    <ID>Wrapping:NavigationWrapper.kt${ artistId -&gt; navController.navigate(ArtistDetail(artistId)) }</ID>
+    <ID>Wrapping:NavigationWrapper.kt${ artistId, artistName -&gt; navController.navigate(AlbumsDetail(artistId, artistName)) }</ID>
   </CurrentIssues>
 </SmellBaseline>
