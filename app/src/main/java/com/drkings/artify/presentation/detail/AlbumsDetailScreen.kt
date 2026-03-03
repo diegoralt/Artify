@@ -40,7 +40,6 @@ import androidx.compose.material.icons.filled.Shield
 import androidx.compose.material.icons.filled.SwapVert
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -90,6 +89,7 @@ import coil3.size.Size
 import com.drkings.artify.R
 import com.drkings.artify.domain.entity.AlbumEntity
 import com.drkings.artify.presentation.core.ErrorContent
+import com.drkings.artify.presentation.core.LoadingContent
 import com.drkings.artify.ui.theme.Green20
 import com.drkings.artify.ui.theme.Green40
 import com.drkings.artify.ui.theme.Green60
@@ -154,7 +154,7 @@ fun AlbumsDetailScreen(
                 .padding(padding)
         ) {
             when (val state = uiState) {
-                is AlbumsUiState.Loading -> AlbumsLoadingContent()
+                is AlbumsUiState.Loading -> LoadingContent()
                 is AlbumsUiState.Error -> ErrorContent(
                     onRetry = viewModel::retry
                 )
@@ -966,21 +966,6 @@ private fun SortPickerSheet(
                 }
             }
         }
-    }
-}
-
-@Composable
-private fun AlbumsLoadingContent() {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Neutral6),
-        contentAlignment = Alignment.Center
-    ) {
-        CircularProgressIndicator(
-            color = Green60,
-            strokeWidth = 2.dp
-        )
     }
 }
 

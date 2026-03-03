@@ -31,7 +31,6 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -75,6 +74,7 @@ import com.drkings.artify.R
 import com.drkings.artify.domain.entity.ArtistDetailEntity
 import com.drkings.artify.domain.entity.MemberEntity
 import com.drkings.artify.presentation.core.ErrorContent
+import com.drkings.artify.presentation.core.LoadingContent
 import com.drkings.artify.ui.theme.Green60
 import com.drkings.artify.ui.theme.Neutral15
 import com.drkings.artify.ui.theme.Neutral6
@@ -128,7 +128,7 @@ fun ArtistDetailScreen(
                 .padding(padding)
         ) {
             when (val state = uiState) {
-                is ArtistDetailUiState.Loading -> ArtistDetailLoadingContent()
+                is ArtistDetailUiState.Loading -> LoadingContent()
                 is ArtistDetailUiState.Error -> ErrorContent(
                     artistDetailViewModel::retry
                 )
@@ -491,18 +491,6 @@ private fun DiscographyButton(onClick: () -> Unit) {
                 modifier = Modifier.size(18.dp)
             )
         }
-    }
-}
-
-@Composable
-private fun ArtistDetailLoadingContent() {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Neutral6),
-        contentAlignment = Alignment.Center
-    ) {
-        CircularProgressIndicator(color = Green60)
     }
 }
 
