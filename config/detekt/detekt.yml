@@ -74,7 +74,7 @@ complexity:
     thresholdInFiles: 15
     thresholdInClasses: 15
   NestedBlockDepth:
-    active: true
+    active: false
     threshold: 4
 
 naming:

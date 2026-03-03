@@ -1,5 +1,6 @@
 package com.drkings.artify
 
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -15,7 +16,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             ArtifyTheme {
-                NavigationWrapper()
+                NavigationWrapper(Build.VERSION.SDK_INT < Build.VERSION_CODES.S)
             }
         }
     }

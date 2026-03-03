@@ -110,9 +110,12 @@ dependencies {
     implementation(libs.hilt.navigation)
     ksp(libs.hilt.compiler)
 
-    // Retrofit
+    // Network
     implementation(libs.retrofit)
     implementation(libs.retrofit.adapter)
+    implementation(platform(libs.okhttp.bom))
+    implementation(libs.okhttp)
+    implementation(libs.okhttp.logging)
 
     // Static code analyzer
     detektPlugins(libs.detekt.formatting)
