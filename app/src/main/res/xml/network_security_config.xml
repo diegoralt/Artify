@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+
+    <!-- Configuración de certificados de confianza -->
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <!-- ISRG Root X2: requerido para Let's Encrypt E5-E8 en API < 30 -->
+            <certificates src="@raw/isrg_root_x1" />
+            <certificates src="@raw/isrg_root_x2" />
+            <!-- CAs del sistema del dispositivo -->
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+
+</network-security-config>
