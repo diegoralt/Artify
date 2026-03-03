@@ -1,6 +1,9 @@
 package com.drkings.artify.presentation.core
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -10,9 +13,13 @@ import com.drkings.artify.presentation.search.SearchScreen
 import com.drkings.artify.presentation.splash.SplashScreen
 
 @Composable
-fun NavigationWrapper() {
+fun NavigationWrapper(shouldShowSplash: Boolean) {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = Splash) {
+    val showSplashScreen by remember { mutableStateOf(shouldShowSplash) }
+    NavHost(
+        navController = navController,
+        startDestination = if (showSplashScreen) Splash else Search
+    ) {
         composable<Splash> {
             SplashScreen(navigateToSearch = {
                 navController.navigate(Search) {
