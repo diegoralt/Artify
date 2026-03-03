@@ -2,7 +2,7 @@
 <network-security-config>
 
     <!-- Configuración de certificados de confianza -->
-    <base-config cleartextTrafficPermitted="true">
+    <base-config cleartextTrafficPermitted="false">
         <trust-anchors>
             <!-- ISRG Root X2: requerido para Let's Encrypt E5-E8 en API < 30 -->
             <certificates src="@raw/isrg_root_x1" />

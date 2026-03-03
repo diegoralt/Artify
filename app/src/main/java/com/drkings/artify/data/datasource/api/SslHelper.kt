@@ -17,7 +17,7 @@ fun buildTrustManager(context: Context): X509TrustManager {
     // Por eso se bundlea aquí junto con ISRG Root X2 para cubrir ambas cadenas.
     val customCerts = listOf(
         loadCertificate(context, R.raw.isrg_root_x1), // Requerido: firma E7-cross → discogs.com
-        loadCertificate(context, R.raw.isrg_root_x2)  // Respaldo: firma E7 directo
+        loadCertificate(context, R.raw.isrg_root_x2) // Respaldo: firma E7 directo
     )
 
     val androidCAStore = KeyStore.getInstance("AndroidCAStore").apply {

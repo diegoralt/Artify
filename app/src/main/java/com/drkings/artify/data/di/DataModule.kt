@@ -47,13 +47,15 @@ object DataModule {
 
         return OkHttpClient.Builder()
             .sslSocketFactory(sslContext.socketFactory, trustManager)
-            .addInterceptor(HttpLoggingInterceptor().apply {
-                level = if (BuildConfig.DEBUG) {
-                    HttpLoggingInterceptor.Level.BODY
-                } else {
-                    HttpLoggingInterceptor.Level.NONE
+            .addInterceptor(
+                HttpLoggingInterceptor().apply {
+                    level = if (BuildConfig.DEBUG) {
+                        HttpLoggingInterceptor.Level.BODY
+                    } else {
+                        HttpLoggingInterceptor.Level.NONE
+                    }
                 }
-            })
+            )
             .addInterceptor(AuthInterceptor(BuildConfig.DISCOGS_TOKEN, BuildConfig.VERSION_NAME))
             .connectTimeout(30, TimeUnit.SECONDS)
             .readTimeout(30, TimeUnit.SECONDS)

@@ -1,6 +1,5 @@
 <?xml version="1.0" ?>
 <SmellBaseline>
-  <ManuallySuppressedIssues></ManuallySuppressedIssues>
   <CurrentIssues>
     <ID>CognitiveComplexMethod:AlbumsDetailScreen.kt$@Composable private fun SortPickerSheet( current: SortOrder, onSelect: (SortOrder) -&gt; Unit )</ID>
     <ID>CognitiveComplexMethod:AlbumsDetailScreen.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable private fun AlbumsSuccessContent( state: AlbumsUiState.Success, onLoadMore: () -&gt; Unit, onToggleYear: (Int) -&gt; Unit, onToggleGenre: (String) -&gt; Unit, onToggleLabel: (String) -&gt; Unit, onClearFilters: () -&gt; Unit, onSortChange: (SortOrder) -&gt; Unit )</ID>
@@ -38,6 +37,7 @@
     <ID>MagicNumber:ArtistResultItem.kt$0xFF2a5a3a</ID>
     <ID>MagicNumber:ArtistResultItem.kt$200</ID>
     <ID>MagicNumber:ArtistResultItem.kt$52f</ID>
+    <ID>MagicNumber:DataModule.kt$DataModule$30</ID>
     <ID>MagicNumber:SearchScreen.kt$3</ID>
     <ID>MagicNumber:SkeletonItem.kt$0.42f</ID>
     <ID>MagicNumber:SkeletonItem.kt$0.60f</ID>
@@ -45,9 +45,10 @@
     <ID>MagicNumber:SkeletonItem.kt$300f</ID>
     <ID>MagicNumber:SplashScreen.kt$0.6f</ID>
     <ID>MagicNumber:SplashScreen.kt$1000L</ID>
+    <ID>SwallowedException:SslHelper.kt$e: Exception</ID>
     <ID>TooGenericExceptionCaught:ArtistDetailRepositoryImpl.kt$ArtistDetailRepositoryImpl$e: Exception</ID>
     <ID>TooGenericExceptionCaught:ArtistReleasesRepositoryImpl.kt$ArtistReleasesRepositoryImpl$e: Exception</ID>
     <ID>TooGenericExceptionCaught:SearchRepositoryImpl.kt$SearchRepositoryImpl$e: Exception</ID>
-    <ID>TooManyFunctions:AlbumsDetailScreen.kt$com.drkings.artify.presentation.detail.AlbumsDetailScreen.kt</ID>
+    <ID>TooGenericExceptionCaught:SslHelper.kt$e: Exception</ID>
   </CurrentIssues>
 </SmellBaseline>
