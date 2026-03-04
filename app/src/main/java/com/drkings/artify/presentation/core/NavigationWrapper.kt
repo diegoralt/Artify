@@ -1,8 +1,6 @@
 package com.drkings.artify.presentation.core
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -15,35 +13,51 @@ import com.drkings.artify.presentation.splash.SplashScreen
 @Composable
 fun NavigationWrapper(shouldShowSplash: Boolean) {
     val navController = rememberNavController()
-    val showSplashScreen by remember { mutableStateOf(shouldShowSplash) }
+
+    val navigateToSearch: () -> Unit = remember(navController) {
+        {
+            navController.navigate(Search) {
+                popUpTo(Splash) { inclusive = true }
+            }
+        }
+    }
+
+    val navigateToArtist: (Int) -> Unit = remember(navController) {
+        { artistId ->
+            navController.navigate(ArtistDetail(artistId))
+        }
+    }
+
+    val navigateToAlbums: (Int, String) -> Unit = remember(navController) {
+        { artistId, artistName ->
+            navController.navigate(AlbumsDetail(artistId, artistName))
+        }
+    }
+
+    val navigateToBack: () -> Unit = remember(navController) {
+        {
+            navController.popBackStack()
+        }
+    }
+
     NavHost(
         navController = navController,
-        startDestination = if (showSplashScreen) Splash else Search
+        startDestination = if (shouldShowSplash) Splash else Search
     ) {
         composable<Splash> {
-            SplashScreen(navigateToSearch = {
-                navController.navigate(Search) {
-                    popUpTo(Splash) {
-                        inclusive = true
-                    }
-                }
-            })
+            SplashScreen(navigateToSearch = navigateToSearch)
         }
         composable<Search> {
-            SearchScreen(navigateToDetails = { artistId ->
-                navController.navigate(ArtistDetail(artistId))
-            })
+            SearchScreen(navigateToDetails = navigateToArtist)
         }
         composable<ArtistDetail> {
             ArtistDetailScreen(
-                navigateToBack = { navController.popBackStack() },
-                navigateToAlbums = { artistId, artistName ->
-                    navController.navigate(AlbumsDetail(artistId, artistName))
-                }
+                navigateToBack = navigateToBack,
+                navigateToAlbums = navigateToAlbums
             )
         }
         composable<AlbumsDetail> {
-            AlbumsDetailScreen(navigateToBack = { navController.popBackStack() })
+            AlbumsDetailScreen(navigateToBack = navigateToBack)
         }
     }
 }

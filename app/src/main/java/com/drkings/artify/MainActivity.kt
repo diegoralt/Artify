@@ -16,7 +16,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             ArtifyTheme {
-                NavigationWrapper(Build.VERSION.SDK_INT < Build.VERSION_CODES.S)
+                NavigationWrapper(savedInstanceState == null && Build.VERSION.SDK_INT < Build.VERSION_CODES.S)
             }
         }
     }

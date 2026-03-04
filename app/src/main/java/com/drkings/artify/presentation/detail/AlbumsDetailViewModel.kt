@@ -49,7 +49,7 @@ class AlbumsDetailViewModel @Inject constructor(
     ) { base, filters, sort ->
         when (base) {
             is AlbumsBaseState.Loading -> AlbumsUiState.Loading
-            is AlbumsBaseState.Error -> AlbumsUiState.Error(base.message)
+            is AlbumsBaseState.Error -> AlbumsUiState.Error
             is AlbumsBaseState.Success -> {
                 val filtered = applyFilters(base.allAlbums, filters, sort)
                 AlbumsUiState.Success(
@@ -161,9 +161,7 @@ class AlbumsDetailViewModel @Inject constructor(
                     )
                 }
                 .onFailure { error ->
-                    _baseState.value = AlbumsBaseState.Error(
-                        message = error.message ?: "Unable to load albums"
-                    )
+                    _baseState.value = AlbumsBaseState.Error
                 }
         }
     }
@@ -219,7 +217,7 @@ data class FilterState(
 
 private sealed interface AlbumsBaseState {
     object Loading : AlbumsBaseState
-    data class Error(val message: String) : AlbumsBaseState
+    object Error : AlbumsBaseState
     data class Success(
         val allAlbums: List<AlbumEntity>,
         val isLoadingNextPage: Boolean
@@ -230,7 +228,7 @@ private sealed interface AlbumsBaseState {
 
 sealed interface AlbumsUiState {
     object Loading : AlbumsUiState
-    data class Error(val message: String) : AlbumsUiState
+    object Error : AlbumsUiState
     data class Success(
         val albums: List<AlbumEntity>, // Lista ya filtrada y ordenada
         val isLoadingNextPage: Boolean,

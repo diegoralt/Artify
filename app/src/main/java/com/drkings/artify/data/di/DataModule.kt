@@ -24,12 +24,14 @@ import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
 import java.security.SecureRandom
 import java.util.concurrent.TimeUnit
+import javax.inject.Singleton
 import javax.net.ssl.SSLContext
 
 @Module
 @InstallIn(SingletonComponent::class)
 object DataModule {
 
+    @Singleton
     @Provides
     fun provideJson(): Json {
         return Json {
@@ -38,6 +40,7 @@ object DataModule {
         }
     }
 
+    @Singleton
     @Provides
     fun provideOkHttpClient(@ApplicationContext context: Context): OkHttpClient {
         val trustManager = buildTrustManager(context)
@@ -50,18 +53,19 @@ object DataModule {
             .addInterceptor(
                 HttpLoggingInterceptor().apply {
                     level = if (BuildConfig.DEBUG) {
-                        HttpLoggingInterceptor.Level.BODY
+                        HttpLoggingInterceptor.Level.BASIC
                     } else {
                         HttpLoggingInterceptor.Level.NONE
                     }
                 }
             )
             .addInterceptor(AuthInterceptor(BuildConfig.DISCOGS_TOKEN, BuildConfig.VERSION_NAME))
-            .connectTimeout(30, TimeUnit.SECONDS)
-            .readTimeout(30, TimeUnit.SECONDS)
+            .connectTimeout(10, TimeUnit.SECONDS)
+            .readTimeout(15, TimeUnit.SECONDS)
             .build()
     }
 
+    @Singleton
     @Provides
     fun provideRetrofit(json: Json, okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
@@ -71,21 +75,25 @@ object DataModule {
             .build()
     }
 
+    @Singleton
     @Provides
     fun provideApiServices(retrofit: Retrofit): ApiService {
         return retrofit.create(ApiService::class.java)
     }
 
+    @Singleton
     @Provides
     fun provideSearchRepository(apiService: ApiService): SearchRepository {
         return SearchRepositoryImpl(apiService)
     }
 
+    @Singleton
     @Provides
     fun provideArtistDetailRepository(apiService: ApiService): ArtistDetailRepository {
         return ArtistDetailRepositoryImpl(apiService)
     }
 
+    @Singleton
     @Provides
     fun provideArtistReleasesRepository(apiService: ApiService): ArtistReleasesRepository {
         return ArtistReleasesRepositoryImpl(apiService)
