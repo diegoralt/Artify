@@ -35,6 +35,7 @@ class ArtistDetailUseCaseTest {
             members = listOf(
                 MemberEntity(
                     id = 42610,
+                    uuid = "f380cc0f-ef08-492b-bf8a-84a8c0d7c9dc",
                     name = "Chris Martin",
                     imageUrl = "https://img.discogs.com/chris.jpg"
                 )
@@ -64,6 +65,7 @@ class ArtistDetailUseCaseTest {
             members = listOf(
                 MemberEntity(
                     id = 42610,
+                    uuid = "f380cc0f-ef08-492b-bf8a-84a8c0d7c9dc",
                     name = "Chris Martin",
                     imageUrl = "https://img.discogs.com/chris.jpg"
                 )

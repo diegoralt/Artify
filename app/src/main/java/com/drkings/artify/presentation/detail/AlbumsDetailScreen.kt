@@ -452,7 +452,7 @@ private fun AlbumsList(
     ) {
         items(
             items = albums,
-            key = { it.id }
+            key = { it.uuid }
         ) { album ->
             AlbumRow(album = album)
         }
@@ -989,6 +989,7 @@ private fun AlbumsDetailScreenPreview() {
             albums = listOf(
                 AlbumEntity(
                     1,
+                    "f380cc0f-ef08-492b-bf8a-84a8c0d7c9dc",
                     "A Head Full of Dreams",
                     "Coldplay",
                     2015,
@@ -999,6 +1000,7 @@ private fun AlbumsDetailScreenPreview() {
                 ),
                 AlbumEntity(
                     2,
+                    "1d430f16-2d15-4808-b9b0-6d749762b154",
                     "Ghost Stories",
                     "Coldplay",
                     2014,
@@ -1009,6 +1011,7 @@ private fun AlbumsDetailScreenPreview() {
                 ),
                 AlbumEntity(
                     3,
+                    "2f596d61-68f3-433b-9a46-20ac0ccabd12",
                     "Mylo Xyloto",
                     "Coldplay",
                     2011,
@@ -1019,6 +1022,7 @@ private fun AlbumsDetailScreenPreview() {
                 ),
                 AlbumEntity(
                     4,
+                    "b90b0aa9-f44d-482c-b785-cc53ee42a928",
                     "Viva la Vida",
                     "Coldplay",
                     2008,

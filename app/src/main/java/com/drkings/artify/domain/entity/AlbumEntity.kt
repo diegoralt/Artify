@@ -2,6 +2,7 @@ package com.drkings.artify.domain.entity
 
 data class AlbumEntity(
     val id: Int,
+    val uuid: String,
     val title: String,
     val artist: String,
     val year: Int?,

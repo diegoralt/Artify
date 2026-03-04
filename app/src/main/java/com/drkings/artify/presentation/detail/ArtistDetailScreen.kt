@@ -396,7 +396,7 @@ private fun MembersSection(members: List<MemberEntity>) {
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             contentPadding = PaddingValues(horizontal = 2.dp)
         ) {
-            items(items = members, key = { it.id }) { member ->
+            items(items = members, key = { it.uuid }) { member ->
                 MemberItem(member = member)
             }
         }
@@ -515,11 +515,36 @@ private fun ArtistDetailContentPreview() {
             profile = "Pop rock band from London",
             image = "https://i.discogs.com/coldplay.jpeg",
             members = listOf(
-                MemberEntity(42610, "Chris Martin", imageUrl = ""),
-                MemberEntity(530745, "Guy Berryman", imageUrl = ""),
-                MemberEntity(530746, "Will Champion", imageUrl = ""),
-                MemberEntity(530747, "Jon Buckland", imageUrl = ""),
-                MemberEntity(530749, "Phil Harvey", imageUrl = "")
+                MemberEntity(
+                    42610,
+                    "f380cc0f-ef08-492b-bf8a-84a8c0d7c9dc",
+                    "Chris Martin",
+                    imageUrl = ""
+                ),
+                MemberEntity(
+                    530745,
+                    "1d430f16-2d15-4808-b9b0-6d749762b154",
+                    "Guy Berryman",
+                    imageUrl = ""
+                ),
+                MemberEntity(
+                    530746,
+                    "2f596d61-68f3-433b-9a46-20ac0ccabd12",
+                    "Will Champion",
+                    imageUrl = ""
+                ),
+                MemberEntity(
+                    530747,
+                    "b90b0aa9-f44d-482c-b785-cc53ee42a928",
+                    "Jon Buckland",
+                    imageUrl = ""
+                ),
+                MemberEntity(
+                    530749,
+                    "eb2966d7-a46d-443c-977f-e96dbeb8b79a",
+                    "Phil Harvey",
+                    imageUrl = ""
+                )
             )
         ),
         onDiscographyClick = {}

@@ -10,6 +10,7 @@ data class ArtistDetailEntity(
 
 data class MemberEntity(
     val id: Int,
+    val uuid: String,
     val name: String,
     val imageUrl: String
 )

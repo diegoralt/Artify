@@ -280,7 +280,7 @@ private fun SearchResultsList(
         state = listState,
         modifier = Modifier.fillMaxSize()
     ) {
-        items(items = results, key = { artist -> artist.id }) { artist ->
+        items(items = results, key = { artist -> artist.uuid }) { artist ->
             ArtistResultItem(
                 artist = artist,
                 onClick = { onArtistClick(artist.id) }

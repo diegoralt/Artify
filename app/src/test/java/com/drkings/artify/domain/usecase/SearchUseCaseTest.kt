@@ -37,12 +37,14 @@ class SearchUseCaseTest {
                 artists = listOf(
                     ArtistEntity(
                         id = 29735,
+                        uuid = "09e8638b-a98a-40da-8506-ae1c368492b9",
                         name = "Coldplay",
                         type = "artist",
                         thumbUrl = "https://img.discogs.com/coldplay.jpg"
                     ),
                     ArtistEntity(
                         id = 42610,
+                        uuid = "f380cc0f-ef08-492b-bf8a-84a8c0d7c9dc",
                         name = "Chris Martin",
                         type = "artist",
                         thumbUrl = "https://img.discogs.com/chris.jpg"
@@ -71,12 +73,14 @@ class SearchUseCaseTest {
                 artists = listOf(
                     ArtistEntity(
                         id = 29735,
+                        uuid = "09e8638b-a98a-40da-8506-ae1c368492b9",
                         name = "Coldplay",
                         type = "artist",
                         thumbUrl = "https://img.discogs.com/coldplay.jpg"
                     ),
                     ArtistEntity(
                         id = 42610,
+                        uuid = "f380cc0f-ef08-492b-bf8a-84a8c0d7c9dc",
                         name = "Chris Martin",
                         type = "artist",
                         thumbUrl = "https://img.discogs.com/chris.jpg"
