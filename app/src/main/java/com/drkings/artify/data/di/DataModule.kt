@@ -4,6 +4,7 @@ import android.content.Context
 import com.drkings.artify.BuildConfig
 import com.drkings.artify.data.datasource.api.ApiService
 import com.drkings.artify.data.datasource.api.AuthInterceptor
+import com.drkings.artify.data.datasource.api.RateLimitInterceptor
 import com.drkings.artify.data.datasource.api.buildTrustManager
 import com.drkings.artify.data.repository.ArtistDetailRepositoryImpl
 import com.drkings.artify.data.repository.ArtistReleasesRepositoryImpl
@@ -60,6 +61,7 @@ object DataModule {
                 }
             )
             .addInterceptor(AuthInterceptor(BuildConfig.DISCOGS_TOKEN, BuildConfig.VERSION_NAME))
+            .addInterceptor(RateLimitInterceptor())
             .connectTimeout(10, TimeUnit.SECONDS)
             .readTimeout(15, TimeUnit.SECONDS)
             .build()
