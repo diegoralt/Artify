@@ -203,11 +203,11 @@ private fun AlbumsSuccessContent(
             val info = listState.layoutInfo
             val lastVisible = info.visibleItemsInfo.lastOrNull()?.index ?: 0
             val total = info.totalItemsCount
-            total > 0 && lastVisible >= total - 5 && !state.isLoadingNextPage
+            total > 0 && lastVisible >= total - 5
         }
     }
-    LaunchedEffect(shouldLoadMore) {
-        if (shouldLoadMore) onLoadMore()
+    LaunchedEffect(shouldLoadMore, state.isLoadingNextPage) {
+        if (shouldLoadMore && !state.isLoadingNextPage) onLoadMore()
     }
 
     val albumsKey = state.albums.firstOrNull()?.id
