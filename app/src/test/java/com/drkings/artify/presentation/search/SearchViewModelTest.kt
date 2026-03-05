@@ -101,12 +101,11 @@ class SearchViewModelTest {
             advanceTimeBy(400L)
             advanceUntilIdle()
 
-            //Then
+            // Then
             val state = viewModel.uiState.value
             assertEquals(2, (state as SearchUiState.Success).artists.size)
             assertEquals("Coldplay", state.artists.first().name)
         }
-
 
     @Test
     fun `loadNextPage - black query - searchUseCase is never invoked when query is empty`() =

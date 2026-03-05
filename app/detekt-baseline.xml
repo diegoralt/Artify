@@ -46,6 +46,7 @@
     <ID>MagicNumber:SkeletonItem.kt$300f</ID>
     <ID>MagicNumber:SplashScreen.kt$0.6f</ID>
     <ID>MagicNumber:SplashScreen.kt$1000L</ID>
+    <ID>ReturnCount:AlbumsDetailViewModel.kt$AlbumsDetailViewModel$fun loadNextPage()</ID>
     <ID>SwallowedException:SslHelper.kt$e: Exception</ID>
     <ID>TooGenericExceptionCaught:ArtistDetailRepositoryImpl.kt$ArtistDetailRepositoryImpl$e: Exception</ID>
     <ID>TooGenericExceptionCaught:ArtistReleasesRepositoryImpl.kt$ArtistReleasesRepositoryImpl$e: Exception</ID>
