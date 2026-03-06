@@ -1,12 +1,12 @@
 package com.drkings.artify.data.mapper
 
-import com.drkings.artify.data.response.ArtistDetailResponse
-import com.drkings.artify.data.response.ArtistReleasesResponse
-import com.drkings.artify.data.response.ArtistResponse
-import com.drkings.artify.data.response.MemberResponse
-import com.drkings.artify.data.response.PaginationResponse
-import com.drkings.artify.data.response.ReleaseResponse
-import com.drkings.artify.data.response.SearchResponse
+import com.drkings.artify.data.datasource.api.response.ArtistDetailResponse
+import com.drkings.artify.data.datasource.api.response.ArtistReleasesResponse
+import com.drkings.artify.data.datasource.api.response.ArtistResponse
+import com.drkings.artify.data.datasource.api.response.MemberResponse
+import com.drkings.artify.data.datasource.api.response.PaginationResponse
+import com.drkings.artify.data.datasource.api.response.ReleaseResponse
+import com.drkings.artify.data.datasource.api.response.SearchResponse
 import com.drkings.artify.domain.entity.AlbumEntity
 import com.drkings.artify.domain.entity.AlbumsDetailEntity
 import com.drkings.artify.domain.entity.ArtistDetailEntity

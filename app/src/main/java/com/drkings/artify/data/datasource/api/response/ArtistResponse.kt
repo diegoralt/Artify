@@ -1,4 +1,4 @@
-package com.drkings.artify.data.response
+package com.drkings.artify.data.datasource.api.response
 
 import kotlinx.serialization.Serializable
 

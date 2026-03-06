@@ -1,9 +1,9 @@
 package com.drkings.artify.data.repository
 
 import com.drkings.artify.data.datasource.api.ApiService
-import com.drkings.artify.data.response.ArtistDetailResponse
-import com.drkings.artify.data.response.ImageResponse
-import com.drkings.artify.data.response.MemberResponse
+import com.drkings.artify.data.datasource.api.response.ArtistDetailResponse
+import com.drkings.artify.data.datasource.api.response.ImageResponse
+import com.drkings.artify.data.datasource.api.response.MemberResponse
 import com.drkings.artify.domain.repository.ArtistDetailRepository
 import io.mockk.coEvery
 import io.mockk.coVerify

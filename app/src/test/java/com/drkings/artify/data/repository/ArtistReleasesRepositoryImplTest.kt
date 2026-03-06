@@ -1,10 +1,10 @@
 package com.drkings.artify.data.repository
 
 import com.drkings.artify.data.datasource.api.ApiService
-import com.drkings.artify.data.response.ArtistReleasesResponse
-import com.drkings.artify.data.response.PaginationResponse
-import com.drkings.artify.data.response.ReleaseDetailResponse
-import com.drkings.artify.data.response.ReleaseResponse
+import com.drkings.artify.data.datasource.api.response.ArtistReleasesResponse
+import com.drkings.artify.data.datasource.api.response.PaginationResponse
+import com.drkings.artify.data.datasource.api.response.ReleaseDetailResponse
+import com.drkings.artify.data.datasource.api.response.ReleaseResponse
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
