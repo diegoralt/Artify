@@ -83,6 +83,8 @@ class AlbumsDetailViewModel @Inject constructor(
     fun loadNextPage() {
         if (hasReachedEnd) return
 
+        if (_filterState.value.isActive) return
+
         val current = _baseState.value as? AlbumsBaseState.Success ?: return
         if (current.isLoadingNextPage) return
 

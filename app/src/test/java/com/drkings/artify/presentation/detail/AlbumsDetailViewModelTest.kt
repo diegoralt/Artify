@@ -35,6 +35,7 @@ class AlbumsDetailViewModelTest {
     private val fakeAlbums = listOf(
         AlbumEntity(
             id = 1,
+            uuid = "f380cc0f-ef08-492b-bf8a-84a8c0d7c9dc",
             title = "Parachutes",
             artist = "Coldplay",
             year = 2000,
@@ -45,6 +46,7 @@ class AlbumsDetailViewModelTest {
         ),
         AlbumEntity(
             id = 2,
+            uuid = "1d430f16-2d15-4808-b9b0-6d749762b154",
             title = "A Rush of Blood to the Head",
             artist = "Coldplay",
             year = 2002,
@@ -55,6 +57,7 @@ class AlbumsDetailViewModelTest {
         ),
         AlbumEntity(
             id = 3,
+            uuid = "2f596d61-68f3-433b-9a46-20ac0ccabd12",
             title = "Music of the Spheres",
             artist = "Coldplay",
             year = 2021,

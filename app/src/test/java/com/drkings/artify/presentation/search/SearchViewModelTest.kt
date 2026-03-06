@@ -33,12 +33,14 @@ class SearchViewModelTest {
         artists = listOf(
             ArtistEntity(
                 id = 29735,
+                uuid = "09e8638b-a98a-40da-8506-ae1c368492b9",
                 name = "Coldplay",
                 type = "artist",
                 thumbUrl = "https://img.discogs.com/coldplay.jpg"
             ),
             ArtistEntity(
                 id = 42610,
+                uuid = "f380cc0f-ef08-492b-bf8a-84a8c0d7c9dc",
                 name = "Chris Martin",
                 type = "artist",
                 thumbUrl = "https://img.discogs.com/chris.jpg"
@@ -99,12 +101,11 @@ class SearchViewModelTest {
             advanceTimeBy(400L)
             advanceUntilIdle()
 
-            //Then
+            // Then
             val state = viewModel.uiState.value
             assertEquals(2, (state as SearchUiState.Success).artists.size)
             assertEquals("Coldplay", state.artists.first().name)
         }
-
 
     @Test
     fun `loadNextPage - black query - searchUseCase is never invoked when query is empty`() =

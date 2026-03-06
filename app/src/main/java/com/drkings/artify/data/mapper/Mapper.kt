@@ -14,6 +14,7 @@ import com.drkings.artify.domain.entity.ArtistEntity
 import com.drkings.artify.domain.entity.MemberEntity
 import com.drkings.artify.domain.entity.PaginationEntity
 import com.drkings.artify.domain.entity.SearchEntity
+import java.util.UUID
 
 // ── Search mappers ───────────────────────────────────────────────────────────
 fun SearchResponse.toDomain(): SearchEntity {
@@ -34,6 +35,7 @@ fun PaginationResponse.toDomain(): PaginationEntity {
 fun ArtistResponse.toDomain(): ArtistEntity {
     return ArtistEntity(
         id = id,
+        uuid = getUniqueUuid(),
         name = title,
         type = type,
         thumbUrl = thumb
@@ -63,6 +65,7 @@ fun ArtistDetailResponse.toDomain(imageByArtistId: Map<Int, String>): ArtistDeta
 fun MemberResponse.toDomain(thumbnailUrl: String): MemberEntity {
     return MemberEntity(
         id = id,
+        uuid = getUniqueUuid(),
         name = name,
         imageUrl = thumbnailUrl
     )
@@ -79,6 +82,7 @@ fun ArtistReleasesResponse.toDomain(genresByReleaseId: Map<Int, List<String>>): 
 fun ReleaseResponse.toDomain(genres: List<String>): AlbumEntity {
     return AlbumEntity(
         id = id,
+        uuid = getUniqueUuid(),
         title = title,
         artist = artist.orEmpty(),
         year = year,
@@ -88,3 +92,5 @@ fun ReleaseResponse.toDomain(genres: List<String>): AlbumEntity {
         genres = genres
     )
 }
+
+private fun getUniqueUuid() = UUID.randomUUID().toString()

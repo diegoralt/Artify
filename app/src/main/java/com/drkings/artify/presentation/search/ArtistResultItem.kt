@@ -188,6 +188,7 @@ private fun ArtistResultItemSoloPreview() {
     ArtistResultItem(
         artist = ArtistEntity(
             id = 29735,
+            uuid = "09e8638b-a98a-40da-8506-ae1c368492b9",
             name = "Coldplay",
             type = "artist",
             thumbUrl = "https://i.discogs.com/coldplay.jpeg"

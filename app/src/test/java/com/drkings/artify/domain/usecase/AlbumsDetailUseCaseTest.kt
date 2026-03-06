@@ -38,6 +38,7 @@ class AlbumsDetailUseCaseTest {
                 albums = listOf(
                     AlbumEntity(
                         id = 123456,
+                        uuid = "f380cc0f-ef08-492b-bf8a-84a8c0d7c9dc",
                         title = "Music of the Spheres",
                         artist = "Coldplay",
                         year = 2021,
@@ -48,6 +49,7 @@ class AlbumsDetailUseCaseTest {
                     ),
                     AlbumEntity(
                         id = 789012,
+                        uuid = "1d430f16-2d15-4808-b9b0-6d749762b154",
                         title = "Everyday Life",
                         artist = "Coldplay",
                         year = 2019,
@@ -88,6 +90,7 @@ class AlbumsDetailUseCaseTest {
                 albums = listOf(
                     AlbumEntity(
                         id = 123456,
+                        uuid = "f380cc0f-ef08-492b-bf8a-84a8c0d7c9dc",
                         title = "Music of the Spheres",
                         artist = "Coldplay",
                         year = 2021,
