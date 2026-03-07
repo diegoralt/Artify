@@ -1,0 +1,11 @@
+package com.drkings.artify.data.datasource.storage.entity
+
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity
+data class Genre(
+    @PrimaryKey(autoGenerate = true) val id: Int,
+    val name: String,
+    val createdAt: Long
+)

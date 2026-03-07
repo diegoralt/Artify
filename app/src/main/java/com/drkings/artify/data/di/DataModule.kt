@@ -1,11 +1,13 @@
 package com.drkings.artify.data.di
 
 import android.content.Context
+import androidx.room.Room
 import com.drkings.artify.BuildConfig
 import com.drkings.artify.data.datasource.api.ApiService
 import com.drkings.artify.data.datasource.api.AuthInterceptor
 import com.drkings.artify.data.datasource.api.RateLimitInterceptor
 import com.drkings.artify.data.datasource.api.buildTrustManager
+import com.drkings.artify.data.datasource.storage.entity.ArtifyDatabase
 import com.drkings.artify.data.repository.ArtistDetailRepositoryImpl
 import com.drkings.artify.data.repository.ArtistReleasesRepositoryImpl
 import com.drkings.artify.data.repository.SearchRepositoryImpl
@@ -65,6 +67,16 @@ object DataModule {
             .connectTimeout(10, TimeUnit.SECONDS)
             .readTimeout(15, TimeUnit.SECONDS)
             .build()
+    }
+
+    @Singleton
+    @Provides
+    fun provideDatabase(@ApplicationContext context: Context): ArtifyDatabase {
+        return Room.databaseBuilder(
+            context,
+            ArtifyDatabase::class.java,
+            "artify_database"
+        ).build()
     }
 
     @Singleton
