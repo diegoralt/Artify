@@ -2,11 +2,11 @@ package com.drkings.artify.data.mapper
 
 import com.drkings.artify.data.datasource.api.response.ArtistDetailResponse
 import com.drkings.artify.data.datasource.api.response.ArtistReleasesResponse
-import com.drkings.artify.data.datasource.api.response.ArtistResponse
 import com.drkings.artify.data.datasource.api.response.MemberResponse
 import com.drkings.artify.data.datasource.api.response.PaginationResponse
 import com.drkings.artify.data.datasource.api.response.ReleaseResponse
-import com.drkings.artify.data.datasource.api.response.SearchResponse
+import com.drkings.artify.data.datasource.storage.entity.Artist
+import com.drkings.artify.data.datasource.storage.entity.Pagination
 import com.drkings.artify.domain.entity.AlbumEntity
 import com.drkings.artify.domain.entity.AlbumsDetailEntity
 import com.drkings.artify.domain.entity.ArtistDetailEntity
@@ -17,10 +17,18 @@ import com.drkings.artify.domain.entity.SearchEntity
 import java.util.UUID
 
 // ── Search mappers ───────────────────────────────────────────────────────────
-fun SearchResponse.toDomain(): SearchEntity {
+fun List<Artist>.toDomain(pageCache: Pagination): SearchEntity {
     return SearchEntity(
-        pagination = pagination.toDomain(),
-        artists = results.map { it.toDomain() }
+        pagination = pageCache.toDomain(),
+        artists = map { it.toDomain() }
+    )
+}
+
+fun Pagination.toDomain(): PaginationEntity {
+    return PaginationEntity(
+        page = page,
+        pages = totalPages,
+        items = totalItems
     )
 }
 
@@ -32,11 +40,11 @@ fun PaginationResponse.toDomain(): PaginationEntity {
     )
 }
 
-fun ArtistResponse.toDomain(): ArtistEntity {
+fun Artist.toDomain(): ArtistEntity {
     return ArtistEntity(
         id = id,
-        uuid = getUniqueUuid(),
-        name = title,
+        uuid = uuid,
+        name = name,
         type = type,
         thumbUrl = thumb
     )

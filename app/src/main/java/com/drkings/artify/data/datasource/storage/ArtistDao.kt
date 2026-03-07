@@ -5,7 +5,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.drkings.artify.data.datasource.storage.entity.Artist
-import com.drkings.artify.data.datasource.storage.entity.Member
 
 @Dao
 interface ArtistDao {
@@ -13,13 +12,10 @@ interface ArtistDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertArtists(artists: List<Artist>)
 
-    @Insert
-    suspend fun insertArtistAndMembers(artist: Artist, members: List<Member>)
+    @Query("SELECT * FROM artist WHERE search_query = :query AND page = :page LIMIT :perPage")
+    suspend fun getArtists(query: String, page: Int, perPage: Int): List<Artist>
 
-    @Query("SELECT * FROM artist WHERE name LIKE :query || '%'")
-    suspend fun getArtists(query: String): List<Artist>
-
-    @Query("DELETE FROM artist")
-    suspend fun deleteAllArtists()
+    @Query("DELETE FROM artist WHERE search_query = :query AND page = :page")
+    suspend fun deleteArtistsByQueryAndPage(query: String, page: Int)
 
 }

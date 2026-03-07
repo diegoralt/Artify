@@ -7,7 +7,7 @@ import com.drkings.artify.data.datasource.api.ApiService
 import com.drkings.artify.data.datasource.api.AuthInterceptor
 import com.drkings.artify.data.datasource.api.RateLimitInterceptor
 import com.drkings.artify.data.datasource.api.buildTrustManager
-import com.drkings.artify.data.datasource.storage.entity.ArtifyDatabase
+import com.drkings.artify.data.datasource.storage.ArtifyDatabase
 import com.drkings.artify.data.repository.ArtistDetailRepositoryImpl
 import com.drkings.artify.data.repository.ArtistReleasesRepositoryImpl
 import com.drkings.artify.data.repository.SearchRepositoryImpl
@@ -76,7 +76,7 @@ object DataModule {
             context,
             ArtifyDatabase::class.java,
             "artify_database"
-        ).build()
+        ).fallbackToDestructiveMigration(false).build()
     }
 
     @Singleton
@@ -97,8 +97,11 @@ object DataModule {
 
     @Singleton
     @Provides
-    fun provideSearchRepository(apiService: ApiService): SearchRepository {
-        return SearchRepositoryImpl(apiService)
+    fun provideSearchRepository(
+        apiService: ApiService,
+        database: ArtifyDatabase
+    ): SearchRepository {
+        return SearchRepositoryImpl(apiService, database)
     }
 
     @Singleton
