@@ -17,5 +17,4 @@ interface PaginationDao {
 
     @Query("DELETE FROM pagination WHERE name = :query AND page = :page")
     suspend fun deletePaginationByQueryAndPage(query: String, page: Int)
-
 }

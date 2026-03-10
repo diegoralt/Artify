@@ -17,5 +17,4 @@ interface ArtistDao {
 
     @Query("DELETE FROM artist WHERE search_query = :query AND page = :page")
     suspend fun deleteArtistsByQueryAndPage(query: String, page: Int)
-
 }

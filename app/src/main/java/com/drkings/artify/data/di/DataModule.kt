@@ -2,6 +2,7 @@ package com.drkings.artify.data.di
 
 import android.content.Context
 import androidx.room.Room
+import androidx.room.withTransaction
 import com.drkings.artify.BuildConfig
 import com.drkings.artify.data.datasource.api.ApiService
 import com.drkings.artify.data.datasource.api.AuthInterceptor
@@ -11,6 +12,7 @@ import com.drkings.artify.data.datasource.storage.ArtifyDatabase
 import com.drkings.artify.data.repository.ArtistDetailRepositoryImpl
 import com.drkings.artify.data.repository.ArtistReleasesRepositoryImpl
 import com.drkings.artify.data.repository.SearchRepositoryImpl
+import com.drkings.artify.data.repository.TransactionRunner
 import com.drkings.artify.domain.repository.ArtistDetailRepository
 import com.drkings.artify.domain.repository.ArtistReleasesRepository
 import com.drkings.artify.domain.repository.SearchRepository
@@ -101,7 +103,12 @@ object DataModule {
         apiService: ApiService,
         database: ArtifyDatabase
     ): SearchRepository {
-        return SearchRepositoryImpl(apiService, database)
+        val runner: TransactionRunner = { block -> database.withTransaction(block) }
+        return SearchRepositoryImpl(
+            apiService = apiService,
+            database = database,
+            transactionRunner = runner
+        )
     }
 
     @Singleton
