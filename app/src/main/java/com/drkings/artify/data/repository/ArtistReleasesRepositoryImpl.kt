@@ -26,24 +26,29 @@ class ArtistReleasesRepositoryImpl @Inject constructor(
         val cacheKey = "artist_releases_$artistId"
         val pageCache = paginationDao.getPagination(cacheKey, page)
         val isExpired = pageCache != null &&
-            (System.currentTimeMillis() - pageCache.createdAt) >= ONE_DAY_MILLIS
+                (System.currentTimeMillis() - pageCache.createdAt) >= ONE_DAY_MILLIS
 
         return if (pageCache == null || isExpired) {
             try {
                 coroutineScope {
                     val response = apiService.getArtistReleases(artistId, page, perPage)
 
-                    val genresByReleaseId: Map<Int, List<String>> = response.releases.map { release ->
-                        async {
-                            val detail = runCatching {
-                                apiService.getReleaseDetail(release.id)
-                            }.getOrNull()
+                    val genresByReleaseId: Map<Int, List<String>> =
+                        response.releases.map { release ->
+                            async {
+                                val detail = runCatching {
+                                    apiService.getReleaseDetail(release.id)
+                                }.getOrNull()
 
-                            release.id to (detail?.genres.orEmpty())
-                        }
-                    }.awaitAll().toMap()
+                                release.id to (detail?.genres.orEmpty())
+                            }
+                        }.awaitAll().toMap()
 
-                    val (newPageCache, albums, genres) = response.toData(artistId, page, genresByReleaseId)
+                    val (newPageCache, albums, genres) = response.toData(
+                        artistId,
+                        page,
+                        genresByReleaseId
+                    )
                     val genreCrossRefs = albums.flatMap { album ->
                         val releaseGenres = genresByReleaseId[album.id].orEmpty()
                         releaseGenres.map { genreName ->
@@ -64,13 +69,22 @@ class ArtistReleasesRepositoryImpl @Inject constructor(
                     releaseDao.getAlbumsWithGenres(artistId, page).toDomain(newPageCache)
                 }
             } catch (e: Exception) {
-                Log.e("ArtistReleasesRepositoryImpl", "getReleases: API failed with ${e.message}, attempting offline fallback")
+                Log.e(
+                    "ArtistReleasesRepositoryImpl",
+                    "getReleases: API failed with ${e.message}, attempting offline fallback"
+                )
                 // Fallback: usar caché aunque esté expirado si hay disponible
                 if (pageCache != null) {
-                    Log.i("ArtistReleasesRepositoryImpl", "Using expired cache for artistId=$artistId, page=$page")
+                    Log.i(
+                        "ArtistReleasesRepositoryImpl",
+                        "Using expired cache for artistId=$artistId, page=$page"
+                    )
                     releaseDao.getAlbumsWithGenres(artistId, page).toDomain(pageCache)
                 } else {
-                    Log.e("ArtistReleasesRepositoryImpl", "No cache available for artistId=$artistId, page=$page")
+                    Log.e(
+                        "ArtistReleasesRepositoryImpl",
+                        "No cache available for artistId=$artistId, page=$page"
+                    )
                     throw e
                 }
             }

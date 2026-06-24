@@ -3,7 +3,6 @@ package com.drkings.artify.data.mapper
 import com.drkings.artify.data.datasource.api.response.ArtistReleasesResponse
 import com.drkings.artify.data.datasource.api.response.PaginationResponse
 import com.drkings.artify.data.datasource.api.response.ReleaseResponse
-import com.drkings.artify.data.datasource.storage.entity.Album
 import com.drkings.artify.data.datasource.storage.entity.AlbumWithGenre
 import com.drkings.artify.data.datasource.storage.entity.Artist
 import com.drkings.artify.data.datasource.storage.entity.ArtistWithMember

@@ -37,7 +37,8 @@ interface ReleaseDao {
     @Query("DELETE FROM album WHERE artistId = :artistId AND page = :page")
     suspend fun deleteAlbumsByArtistAndPage(artistId: Int, page: Int)
 
-    @Query("DELETE FROM albumgenrecrossref WHERE albumUuid IN (SELECT uuid FROM album WHERE artistId = :artistId AND page = :page)")
+    @Query("DELETE FROM albumgenrecrossref WHERE albumUuid IN " +
+            "(SELECT uuid FROM album WHERE artistId = :artistId AND page = :page)")
     suspend fun deleteGenreRelationsByArtistAndPage(artistId: Int, page: Int)
 
     @Query("DELETE FROM genre WHERE uuid NOT IN (SELECT DISTINCT genreUuid FROM albumgenrecrossref)")

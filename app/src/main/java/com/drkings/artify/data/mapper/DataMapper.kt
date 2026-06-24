@@ -1,14 +1,12 @@
 package com.drkings.artify.data.mapper
 
-import com.drkings.artify.data.datasource.api.response.ArtistResponse
 import com.drkings.artify.data.datasource.api.response.ArtistReleasesResponse
+import com.drkings.artify.data.datasource.api.response.ArtistResponse
 import com.drkings.artify.data.datasource.api.response.MemberResponse
 import com.drkings.artify.data.datasource.api.response.PaginationResponse
-import com.drkings.artify.data.datasource.api.response.ReleaseDetailResponse
 import com.drkings.artify.data.datasource.api.response.ReleaseResponse
 import com.drkings.artify.data.datasource.api.response.SearchResponse
 import com.drkings.artify.data.datasource.storage.entity.Album
-import com.drkings.artify.data.datasource.storage.entity.AlbumGenreCrossRef
 import com.drkings.artify.data.datasource.storage.entity.Artist
 import com.drkings.artify.data.datasource.storage.entity.Genre
 import com.drkings.artify.data.datasource.storage.entity.Member
@@ -109,15 +107,6 @@ fun ReleaseResponse.toData(artistId: Int, page: Int): Album {
         page = page,
         createdAt = getTimestamp()
     )
-}
-
-fun ReleaseDetailResponse.toGenreCrossRefs(albumUuid: String): List<AlbumGenreCrossRef> {
-    return genres?.map { genreName ->
-        AlbumGenreCrossRef(
-            albumUuid = albumUuid,
-            genreUuid = "${genreName.lowercase()}-genre"
-        )
-    } ?: emptyList()
 }
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
