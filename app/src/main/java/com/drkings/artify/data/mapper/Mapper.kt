@@ -1,12 +1,13 @@
 package com.drkings.artify.data.mapper
 
-import com.drkings.artify.data.response.ArtistDetailResponse
-import com.drkings.artify.data.response.ArtistReleasesResponse
-import com.drkings.artify.data.response.ArtistResponse
-import com.drkings.artify.data.response.MemberResponse
-import com.drkings.artify.data.response.PaginationResponse
-import com.drkings.artify.data.response.ReleaseResponse
-import com.drkings.artify.data.response.SearchResponse
+import com.drkings.artify.data.datasource.api.response.ArtistReleasesResponse
+import com.drkings.artify.data.datasource.api.response.PaginationResponse
+import com.drkings.artify.data.datasource.api.response.ReleaseResponse
+import com.drkings.artify.data.datasource.storage.entity.AlbumWithGenre
+import com.drkings.artify.data.datasource.storage.entity.Artist
+import com.drkings.artify.data.datasource.storage.entity.ArtistWithMember
+import com.drkings.artify.data.datasource.storage.entity.Member
+import com.drkings.artify.data.datasource.storage.entity.Pagination
 import com.drkings.artify.domain.entity.AlbumEntity
 import com.drkings.artify.domain.entity.AlbumsDetailEntity
 import com.drkings.artify.domain.entity.ArtistDetailEntity
@@ -17,10 +18,18 @@ import com.drkings.artify.domain.entity.SearchEntity
 import java.util.UUID
 
 // ── Search mappers ───────────────────────────────────────────────────────────
-fun SearchResponse.toDomain(): SearchEntity {
+fun List<Artist>.toDomain(pageCache: Pagination): SearchEntity {
     return SearchEntity(
-        pagination = pagination.toDomain(),
-        artists = results.map { it.toDomain() }
+        pagination = pageCache.toDomain(),
+        artists = map { it.toDomain() }
+    )
+}
+
+fun Pagination.toDomain(): PaginationEntity {
+    return PaginationEntity(
+        page = page,
+        pages = totalPages,
+        items = totalItems
     )
 }
 
@@ -32,46 +41,58 @@ fun PaginationResponse.toDomain(): PaginationEntity {
     )
 }
 
-fun ArtistResponse.toDomain(): ArtistEntity {
+fun Artist.toDomain(): ArtistEntity {
     return ArtistEntity(
         id = id,
-        uuid = getUniqueUuid(),
-        name = title,
+        uuid = uuid,
+        name = name,
         type = type,
         thumbUrl = thumb
     )
 }
 
-// ── Artist detail mappers ───────────────────────────────────────────────────────────
-fun ArtistDetailResponse.toDomain(): ArtistDetailEntity {
+// ── Artist detail mappers ─────────────────────────────────────────────────────────────
+fun ArtistWithMember.toDomain(): ArtistDetailEntity {
     return ArtistDetailEntity(
-        id = id,
-        name = name,
-        profile = profile,
-        image = images?.find { it.type == "primary" }?.resourceUrl.orEmpty()
+        id = artist.id,
+        name = artist.name,
+        profile = artist.profile.orEmpty(),
+        image = artist.image.orEmpty(),
+        members = members.map { it.toDomain() }.ifEmpty { null }
     )
 }
 
-fun ArtistDetailResponse.toDomain(imageByArtistId: Map<Int, String>): ArtistDetailEntity {
-    return ArtistDetailEntity(
-        id = id,
-        name = name,
-        profile = profile,
-        image = images?.find { it.type == "primary" }?.resourceUrl.orEmpty(),
-        members = members?.map { it.toDomain(imageByArtistId[it.id].orEmpty()) }
-    )
-}
-
-fun MemberResponse.toDomain(thumbnailUrl: String): MemberEntity {
+fun Member.toDomain(): MemberEntity {
     return MemberEntity(
         id = id,
-        uuid = getUniqueUuid(),
+        uuid = uuid,
         name = name,
-        imageUrl = thumbnailUrl
+        imageUrl = imageUrl
     )
 }
 
 // ── Albums mappers ────────────────────────────────────────────────────────────
+fun List<AlbumWithGenre>.toDomain(pageCache: Pagination): AlbumsDetailEntity {
+    return AlbumsDetailEntity(
+        pagination = pageCache.toDomain(),
+        albums = map { it.toDomain() }
+    )
+}
+
+fun AlbumWithGenre.toDomain(): AlbumEntity {
+    return AlbumEntity(
+        id = album.id,
+        uuid = album.uuid,
+        title = album.title,
+        artist = album.artist.orEmpty(),
+        year = album.year,
+        thumbUrl = album.thumb.orEmpty(),
+        format = album.format.orEmpty(),
+        label = album.label.orEmpty(),
+        genres = genres.map { it.name }
+    )
+}
+
 fun ArtistReleasesResponse.toDomain(genresByReleaseId: Map<Int, List<String>>): AlbumsDetailEntity {
     return AlbumsDetailEntity(
         pagination = pagination.toDomain(),

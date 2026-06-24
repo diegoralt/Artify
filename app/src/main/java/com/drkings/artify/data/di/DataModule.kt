@@ -1,14 +1,18 @@
 package com.drkings.artify.data.di
 
 import android.content.Context
+import androidx.room.Room
+import androidx.room.withTransaction
 import com.drkings.artify.BuildConfig
 import com.drkings.artify.data.datasource.api.ApiService
 import com.drkings.artify.data.datasource.api.AuthInterceptor
 import com.drkings.artify.data.datasource.api.RateLimitInterceptor
 import com.drkings.artify.data.datasource.api.buildTrustManager
+import com.drkings.artify.data.datasource.storage.ArtifyDatabase
 import com.drkings.artify.data.repository.ArtistDetailRepositoryImpl
 import com.drkings.artify.data.repository.ArtistReleasesRepositoryImpl
 import com.drkings.artify.data.repository.SearchRepositoryImpl
+import com.drkings.artify.data.repository.TransactionRunner
 import com.drkings.artify.domain.repository.ArtistDetailRepository
 import com.drkings.artify.domain.repository.ArtistReleasesRepository
 import com.drkings.artify.domain.repository.SearchRepository
@@ -69,6 +73,16 @@ object DataModule {
 
     @Singleton
     @Provides
+    fun provideDatabase(@ApplicationContext context: Context): ArtifyDatabase {
+        return Room.databaseBuilder(
+            context,
+            ArtifyDatabase::class.java,
+            "artify_database"
+        ).fallbackToDestructiveMigration(false).build()
+    }
+
+    @Singleton
+    @Provides
     fun provideRetrofit(json: Json, okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
             .client(okHttpClient)
@@ -85,19 +99,41 @@ object DataModule {
 
     @Singleton
     @Provides
-    fun provideSearchRepository(apiService: ApiService): SearchRepository {
-        return SearchRepositoryImpl(apiService)
+    fun provideSearchRepository(
+        apiService: ApiService,
+        database: ArtifyDatabase
+    ): SearchRepository {
+        val runner: TransactionRunner = { block -> database.withTransaction(block) }
+        return SearchRepositoryImpl(
+            apiService = apiService,
+            database = database,
+            transactionRunner = runner
+        )
     }
 
     @Singleton
     @Provides
-    fun provideArtistDetailRepository(apiService: ApiService): ArtistDetailRepository {
-        return ArtistDetailRepositoryImpl(apiService)
+    fun provideArtistDetailRepository(
+        apiService: ApiService,
+        database: ArtifyDatabase
+    ): ArtistDetailRepository {
+        val runner: TransactionRunner = { block -> database.withTransaction(block) }
+        return ArtistDetailRepositoryImpl(
+            apiService = apiService,
+            database = database,
+            transactionRunner = runner
+        )
     }
 
     @Singleton
     @Provides
-    fun provideArtistReleasesRepository(apiService: ApiService): ArtistReleasesRepository {
-        return ArtistReleasesRepositoryImpl(apiService)
+    fun provideArtistReleasesRepository(
+        apiService: ApiService,
+        database: ArtifyDatabase
+    ): ArtistReleasesRepository {
+        return ArtistReleasesRepositoryImpl(
+            apiService = apiService,
+            database = database
+        )
     }
 }

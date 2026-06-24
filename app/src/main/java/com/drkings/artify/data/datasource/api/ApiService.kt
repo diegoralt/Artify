@@ -1,9 +1,9 @@
 package com.drkings.artify.data.datasource.api
 
-import com.drkings.artify.data.response.ArtistDetailResponse
-import com.drkings.artify.data.response.ArtistReleasesResponse
-import com.drkings.artify.data.response.ReleaseDetailResponse
-import com.drkings.artify.data.response.SearchResponse
+import com.drkings.artify.data.datasource.api.response.ArtistDetailResponse
+import com.drkings.artify.data.datasource.api.response.ArtistReleasesResponse
+import com.drkings.artify.data.datasource.api.response.ReleaseDetailResponse
+import com.drkings.artify.data.datasource.api.response.SearchResponse
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
