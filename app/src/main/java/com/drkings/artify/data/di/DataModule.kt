@@ -113,8 +113,16 @@ object DataModule {
 
     @Singleton
     @Provides
-    fun provideArtistDetailRepository(apiService: ApiService): ArtistDetailRepository {
-        return ArtistDetailRepositoryImpl(apiService)
+    fun provideArtistDetailRepository(
+        apiService: ApiService,
+        database: ArtifyDatabase
+    ): ArtistDetailRepository {
+        val runner: TransactionRunner = { block -> database.withTransaction(block) }
+        return ArtistDetailRepositoryImpl(
+            apiService = apiService,
+            database = database,
+            transactionRunner = runner
+        )
     }
 
     @Singleton

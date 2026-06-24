@@ -1,11 +1,11 @@
 package com.drkings.artify.data.mapper
 
-import com.drkings.artify.data.datasource.api.response.ArtistDetailResponse
 import com.drkings.artify.data.datasource.api.response.ArtistReleasesResponse
-import com.drkings.artify.data.datasource.api.response.MemberResponse
 import com.drkings.artify.data.datasource.api.response.PaginationResponse
 import com.drkings.artify.data.datasource.api.response.ReleaseResponse
 import com.drkings.artify.data.datasource.storage.entity.Artist
+import com.drkings.artify.data.datasource.storage.entity.ArtistWithMember
+import com.drkings.artify.data.datasource.storage.entity.Member
 import com.drkings.artify.data.datasource.storage.entity.Pagination
 import com.drkings.artify.domain.entity.AlbumEntity
 import com.drkings.artify.domain.entity.AlbumsDetailEntity
@@ -50,32 +50,23 @@ fun Artist.toDomain(): ArtistEntity {
     )
 }
 
-// ── Artist detail mappers ───────────────────────────────────────────────────────────
-fun ArtistDetailResponse.toDomain(): ArtistDetailEntity {
+// ── Artist detail mappers ─────────────────────────────────────────────────────────────
+fun ArtistWithMember.toDomain(): ArtistDetailEntity {
     return ArtistDetailEntity(
-        id = id,
-        name = name,
-        profile = profile,
-        image = images?.find { it.type == "primary" }?.resourceUrl.orEmpty()
+        id = artist.id,
+        name = artist.name,
+        profile = artist.profile.orEmpty(),
+        image = artist.image.orEmpty(),
+        members = members.map { it.toDomain() }.ifEmpty { null }
     )
 }
 
-fun ArtistDetailResponse.toDomain(imageByArtistId: Map<Int, String>): ArtistDetailEntity {
-    return ArtistDetailEntity(
-        id = id,
-        name = name,
-        profile = profile,
-        image = images?.find { it.type == "primary" }?.resourceUrl.orEmpty(),
-        members = members?.map { it.toDomain(imageByArtistId[it.id].orEmpty()) }
-    )
-}
-
-fun MemberResponse.toDomain(thumbnailUrl: String): MemberEntity {
+fun Member.toDomain(): MemberEntity {
     return MemberEntity(
         id = id,
-        uuid = getUniqueUuid(),
+        uuid = uuid,
         name = name,
-        imageUrl = thumbnailUrl
+        imageUrl = imageUrl
     )
 }
 
