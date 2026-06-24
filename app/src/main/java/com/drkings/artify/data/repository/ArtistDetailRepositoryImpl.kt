@@ -116,8 +116,15 @@ class ArtistDetailRepositoryImpl(
                 ).toDomain()
             }
         } catch (e: Exception) {
-            Log.e("ArtistDetailRepositoryImpl", "getDetail: ${e.message}")
-            throw e
+            Log.e("ArtistDetailRepositoryImpl", "getDetail: API failed with ${e.message}, attempting offline fallback")
+            // Fallback: usar caché aunque sea parcial (sin imagen) si existe
+            if (cached != null) {
+                Log.i("ArtistDetailRepositoryImpl", "Using cached data for artistId=$artistId")
+                return cached.toDomain()
+            } else {
+                Log.e("ArtistDetailRepositoryImpl", "No cache available for artistId=$artistId")
+                throw e
+            }
         }
     }
 }

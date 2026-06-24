@@ -40,8 +40,15 @@ class SearchRepositoryImpl(
 
                 artists.toDomain(newPageCache)
             } catch (e: Exception) {
-                Log.e("SearchRepositoryImpl", "search: ${e.message}")
-                throw e
+                Log.e("SearchRepositoryImpl", "search: API failed with ${e.message}, attempting offline fallback")
+                // Fallback: usar caché aunque esté expirado si hay disponible
+                if (pageCache != null) {
+                    Log.i("SearchRepositoryImpl", "Using expired cache for query=$query, page=$page")
+                    artistDao.getArtists(query, page, perPage).toDomain(pageCache)
+                } else {
+                    Log.e("SearchRepositoryImpl", "No cache available for query=$query, page=$page")
+                    throw e
+                }
             }
         } else {
             artistDao.getArtists(query, page, perPage).toDomain(pageCache)
