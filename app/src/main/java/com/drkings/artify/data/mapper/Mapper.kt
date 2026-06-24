@@ -3,6 +3,8 @@ package com.drkings.artify.data.mapper
 import com.drkings.artify.data.datasource.api.response.ArtistReleasesResponse
 import com.drkings.artify.data.datasource.api.response.PaginationResponse
 import com.drkings.artify.data.datasource.api.response.ReleaseResponse
+import com.drkings.artify.data.datasource.storage.entity.Album
+import com.drkings.artify.data.datasource.storage.entity.AlbumWithGenre
 import com.drkings.artify.data.datasource.storage.entity.Artist
 import com.drkings.artify.data.datasource.storage.entity.ArtistWithMember
 import com.drkings.artify.data.datasource.storage.entity.Member
@@ -71,6 +73,27 @@ fun Member.toDomain(): MemberEntity {
 }
 
 // ── Albums mappers ────────────────────────────────────────────────────────────
+fun List<AlbumWithGenre>.toDomain(pageCache: Pagination): AlbumsDetailEntity {
+    return AlbumsDetailEntity(
+        pagination = pageCache.toDomain(),
+        albums = map { it.toDomain() }
+    )
+}
+
+fun AlbumWithGenre.toDomain(): AlbumEntity {
+    return AlbumEntity(
+        id = album.id,
+        uuid = album.uuid,
+        title = album.title,
+        artist = album.artist.orEmpty(),
+        year = album.year,
+        thumbUrl = album.thumb.orEmpty(),
+        format = album.format.orEmpty(),
+        label = album.label.orEmpty(),
+        genres = genres.map { it.name }
+    )
+}
+
 fun ArtistReleasesResponse.toDomain(genresByReleaseId: Map<Int, List<String>>): AlbumsDetailEntity {
     return AlbumsDetailEntity(
         pagination = pagination.toDomain(),

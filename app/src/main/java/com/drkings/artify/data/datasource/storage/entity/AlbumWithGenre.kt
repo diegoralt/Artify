@@ -7,9 +7,13 @@ import androidx.room.Relation
 data class AlbumWithGenre(
     @Embedded val album: Album,
     @Relation(
-        parentColumn = "albumId",
-        entityColumn = "genreId",
-        associateBy = Junction(AlbumGenreCrossRef::class)
+        parentColumn = "uuid",
+        entityColumn = "uuid",
+        associateBy = Junction(
+            value = AlbumGenreCrossRef::class,
+            parentColumn = "albumUuid",
+            entityColumn = "genreUuid"
+        )
     )
     val genres: List<Genre>
 )

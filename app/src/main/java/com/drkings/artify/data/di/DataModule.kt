@@ -127,7 +127,13 @@ object DataModule {
 
     @Singleton
     @Provides
-    fun provideArtistReleasesRepository(apiService: ApiService): ArtistReleasesRepository {
-        return ArtistReleasesRepositoryImpl(apiService)
+    fun provideArtistReleasesRepository(
+        apiService: ApiService,
+        database: ArtifyDatabase
+    ): ArtistReleasesRepository {
+        return ArtistReleasesRepositoryImpl(
+            apiService = apiService,
+            database = database
+        )
     }
 }

@@ -5,7 +5,8 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class Genre(
-    @PrimaryKey(autoGenerate = true) val id: Int,
+    @PrimaryKey val uuid: String,
+    val id: Int,
     val name: String,
     val createdAt: Long
 )
