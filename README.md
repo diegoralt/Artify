@@ -1,119 +1,132 @@
 # Artify
 
-## Project setup instructions
+App Android para explorar el catálogo musical de [Discogs](https://www.discogs.com): buscar artistas, ver su ficha y navegar por sus lanzamientos. Funciona sin conexión apoyándose en la caché local.
 
-| Tool            | Requirement                                                 |
-|-----------------|-------------------------------------------------------------|
-| Android Studio  | Ladybug 2024.2 or higher                                    |
-| Android SDK     | API 36 — downloaded automatically when you open the project |
-| JDK             | Java 11 (included with Android Studio)                      |
-| Discogs account | Free — needed to generate the API token                     |
+Construida en Kotlin con Jetpack Compose sobre Clean Architecture y MVVM.
 
-### 1. Clone the repository
+| | |
+|---|---|
+| **Lenguaje** | Kotlin |
+| **UI** | Jetpack Compose + Navigation |
+| **Arquitectura** | Clean Architecture (data / domain / presentation) + MVVM |
+| **Inyección de dependencias** | Hilt |
+| **Red y persistencia** | Retrofit · Room · Coroutines |
+| **Imágenes** | Coil |
+| **Calidad** | Lint · Detekt · pruebas unitarias en GitHub Actions |
+| **API** | Discogs |
+
+---
+
+## Pantallas
+
+| Pantalla | Qué hace |
+|---|---|
+| Splash | Carga inicial y navegación al buscador |
+| Búsqueda | Busca artistas en el catálogo de Discogs |
+| Detalle de artista | Ficha del artista y su lista de lanzamientos |
+| Detalle de álbum | Información del lanzamiento seleccionado |
+
+---
+
+## Arquitectura
+
+El código está dividido en tres capas con responsabilidades separadas:
+
+```
+domain/         Entidades, interfaces de repositorio y casos de uso.
+                Sin dependencias de Android ni de librerías externas.
+
+data/           Implementación de los repositorios, cliente Retrofit,
+                DAOs de Room y mapeo entre modelos de red y de dominio.
+
+presentation/   ViewModels y estado de UI.
+
+ui/             Pantallas y componentes en Jetpack Compose.
+```
+
+La dirección de las dependencias siempre apunta hacia `domain`: la capa de datos y la de presentación conocen al dominio, y el dominio no conoce a ninguna de las dos. Eso permite cambiar la fuente de datos o la UI sin tocar las reglas de negocio.
+
+La navegación entre pantallas está declarada en un solo lugar, de modo que el flujo completo de la app se puede leer de un vistazo.
+
+**Hilt** se encarga de construir y compartir las dependencias, como el cliente de red o la base de datos, para que cada pantalla no tenga que resolverlas por su cuenta.
+
+---
+
+## Modo offline
+
+Todos los flujos de repositorio tienen fallback por caché. Cuando una petición a Discogs falla por falta de red, el repositorio devuelve lo que haya en Room en vez de propagar el error a la UI.
+
+El comportamiento es por flujo, no global: cada repositorio decide qué hacer cuando no hay datos en caché para responder, de modo que la app distingue entre "estoy sin conexión pero tengo esto guardado" y "no hay nada que mostrar".
+
+---
+
+## Calidad y CI
+
+Cada Pull Request contra `master` dispara un workflow de GitHub Actions que compila, analiza y prueba:
+
+```
+./gradlew assembleDebug     Build
+./gradlew lint              Lint de Android
+./gradlew detekt            Análisis estático de Kotlin
+./gradlew test              Pruebas unitarias
+```
+
+### Lint
+
+Herramienta oficial de Android. Detecta uso incorrecto de APIs, recursos sin usar y posibles errores en tiempo de ejecución. El reporte queda en `app/build/reports/lint-results-debug.html`. Los problemas marcados como **Error** rompen el build; los **Warning** son informativos.
+
+### Detekt
+
+Análisis estático específico para Kotlin: complejidad excesiva, nombres poco claros, clases con demasiadas responsabilidades y malas prácticas. La configuración vive en `config/detekt/detekt.yml` con reglas de estilo, complejidad, naming, corrutinas y manejo de excepciones. El reporte queda en `app/build/reports/detekt/detekt.html`.
+
+El proyecto usa un archivo baseline (`detekt-baseline.xml`) para que solo los problemas **nuevos** rompan el build.
+
+### Pruebas
+
+Pruebas unitarias sobre repositorios y casos de uso, incluyendo los escenarios de caché vacía y de fallo de red que sostienen el modo offline.
+
+---
+
+## Cómo ejecutarlo
+
+| Requisito | Versión |
+|---|---|
+| Android Studio | Ladybug 2024.2 o superior |
+| Android SDK | API 36 (se descarga sola al abrir el proyecto) |
+| JDK | Java 11 (incluido con Android Studio) |
+| Cuenta de Discogs | Gratuita, necesaria para generar el token |
+
+### 1. Clonar
 
 ```bash
 git clone https://github.com/diegoralt/Artify.git
 ```
 
-> You can also clone it from Android Studio: **File → New → Project from Version Control** and paste
-> the URL.
+### 2. Configurar el token de Discogs
 
-### 2. Set up the Discogs token
+La app necesita un token personal para consumir la API.
 
-The app needs a personal token from [discogs.com](https://discogs.com) to use its API.
-
-1. Go to **discogs.com → Settings → Developers → Generate new token** and copy it.
-2. Create a file called `local.properties` in the root of the project (same folder as
-   `build.gradle.kts`).
-3. Add this line to the file:
+1. Entra a **discogs.com → Settings → Developers → Generate new token** y cópialo.
+2. Crea un archivo `local.properties` en la raíz del proyecto, junto a `build.gradle.kts`.
+3. Agrega esta línea:
 
 ```properties
-DISCOGS_TOKEN=paste_your_token_here
+DISCOGS_TOKEN=pega_tu_token_aqui
 ```
 
-> ⚠️ `local.properties` is listed in `.gitignore` — it is not included in the repository for
-> security reasons.
+> `local.properties` está en `.gitignore` y no se sube al repositorio.
 
-### 3. Open and run
+### 3. Abrir y correr
 
-1. Open Android Studio and select **File → Open → Artify folder**.
-2. Wait for Gradle to sync and download the dependencies *(this may take around 2 minutes the first
-   time)*.
-3. Select a device — a emulator or a physical device with **USB Debugging** enabled.
-4. Press **▶ Run** (`Shift + F10`) to build and launch the app.
+1. **File → Open** y selecciona la carpeta del proyecto.
+2. Espera a que Gradle sincronice y descargue las dependencias (unos dos minutos la primera vez).
+3. Elige un emulador o un dispositivo físico con **Depuración USB** activada.
+4. Presiona **▶ Run** (`Shift + F10`).
 
 ---
 
-## Analysis and development process
+## Sobre el proyecto
 
-* I reviewed the project requirements and quickly analyzed the Discogs API documentation.
+Artify nació como ejercicio técnico y se siguió desarrollando después. El proceso incluyó analizar la documentación de la API de Discogs, separar requerimientos funcionales de los no funcionales y de lo que quedaba fuera de alcance, prototipar la interfaz antes de escribir código, y trabajar cada pantalla en su propia rama con Pull Request.
 
-* I made a list of requirements to detect functional, non-functional and non-scope requirements.
-  This helps me understand the features of the app clearly.
-
-* I reviewed similar features within the Discogs and Spotify app for more context about
-  functionality in a productive app.
-
-* I created a mockup of the project with the Claude app. I defined the requirements in the chat,
-  also requested changes to the colors and some visual components.
-
-* I looked for services to obtain information and show it in the app using the Claude app. I created
-  an account on Discogs to get a token and made a some requests from the Postman app to check
-  functionality and service responses.
-
-* I created a project in Android Studio and setup git. Also, I made the initial commit within the
-  project with an empty app and did a push for my Github account to register the project there.
-
-* I created a branch for each screen to develop, made a pull request with a functional flow within
-  the application.
-
-* I created a branch to add unit tests, as well as make the latest improvements to the app. In the
-  end, I adjusted the requested project documentation for review.
-
----
-
-## Description architecture
-
-![Clean Architecture](https://miro.medium.com/max/1838/1*B7LkQDyDqLN3rRSrNYkETA.jpeg)
-
-### Clean Architecture + MVVM
-The code is divided into three layers: **data**, **domain** and **presentation**. Each one has a clear responsibility, which makes the project easier to understand and change without affecting the rest.
-
-### Jetpack Compose + Navigation
-The UI is built with **Jetpack Compose**, Google's modern tool for creating screens with less code. Navigation between screens is defined in one place, making it easy to follow the full flow of the app.
-
-### Hilt
-It takes care of creating and sharing the components the app needs — like the network client — so each screen does not have to do it on its own. It is Google's official solution for Android and helps avoid repetitive code.
-
----
-
-## Static code analyzer
-The project uses two tools to keep the code quality consistent: **Lint** and **Detekt**. Both run automatically on every Pull Request through GitHub Actions.
-
----
-
-### Lint
-
-This is Android's official tool. It finds problems related to incorrect API usage, unused resources, and possible runtime errors.
-
-**Run:**
-```bash
-./gradlew lint
-```
-
-**Result:** a report is generated at `app/build/reports/lint-results-debug.html`. Each issue shows the file, the line, and a description of the problem. Issues marked as **Error** will fail the build; issues marked as **Warning** are just informational.
-
-### Detekt
-
-A static analysis tool made specifically for Kotlin. It detects code that is too complex, badly named, has too many responsibilities, or does not follow good practices.
-
-The project configuration is located at `config/detekt/detekt.yml` and includes rules for style, complexity, naming, coroutines, and exception handling.
-
-**Run:**
-```bash
-./gradlew detekt
-```
-
-**Result:** a report is generated at `app/build/reports/detekt/detekt.html`. Each issue shows the rule that was broken, the file, and the line. If the number of issues goes over the `maxIssues` value defined in the configuration, the build will fail.
-
-> ⚠️ To ignore existing issues without blocking the build, the project uses a baseline file (`detekt-baseline.xml`). Only **new** issues will cause an error.
+Buena parte del código se generó con Claude Code sobre especificaciones y criterios de aceptación definidos previamente, con revisión y ajuste manual de los resultados.
